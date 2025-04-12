@@ -10,7 +10,7 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'stock', 'image', 'category_id'];
+    protected $fillable = ['name', 'description', 'price', 'stock', 'image','has_discount','discount','provider_id','category_id'];
 
     public function categoria()
     {
@@ -20,5 +20,10 @@ class Product extends Model
     public function detallesPedido()
     {
         return $this->hasMany(OrderDetails::class);
+    }
+
+    public function proveedor()
+    {
+        return $this->hasOne(Provider::class);
     }
 }

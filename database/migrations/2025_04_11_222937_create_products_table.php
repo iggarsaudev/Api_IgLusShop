@@ -18,7 +18,10 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->integer('stock')->default(0);
             $table->string('image')->nullable();
+            $table->boolean('has_discount');
+            $table->decimal('discount', 10, 2)->default(0);
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->nullOnDelete();
             $table->timestamps();
         });
     }

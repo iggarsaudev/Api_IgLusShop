@@ -22,7 +22,10 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomFloat(2, 5, 200),
             'stock' => $this->faker->numberBetween(0, 100),
             'image' => $this->faker->imageUrl(640, 480, 'technics', true),
-            'category_id' => rand(1, 5)
+            'has_discount' =>$hasDiscount = fake()->boolean(),
+            'discount' => $hasDiscount ? fake()->randomFloat(2, 5, 90) : 0,
+            'category_id' => rand(1, 5),
+            'provider_id' => rand(1, 5), 
         ];
     }
 }
