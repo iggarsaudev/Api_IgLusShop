@@ -62,17 +62,6 @@ return [
             ]) : [],
         ],
 
-        'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('DB_MONGO_URI'),
-            'database' => env('DB_MONGO_DATABASE', 'tfm2'),
-            'username' => env('DB_MONGO_USERNAME', ''),
-            'password' => env('DB_MONG_PASSWORD', ''),
-            'options' => [
-                'database' => 'admin' // Base de datos de autenticación
-            ]
-        ],
-
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

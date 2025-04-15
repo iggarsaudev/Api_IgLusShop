@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Review extends Model
 {
-    protected $connection = 'mongodb';
-    protected $table = 'reviews';
-
     protected $fillable = ['user_id', 'product_id', 'comment', 'rating', 'date'];
 
     protected $casts = [

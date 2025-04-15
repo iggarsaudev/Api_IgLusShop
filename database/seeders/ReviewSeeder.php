@@ -20,21 +20,27 @@ class ReviewSeeder extends Seeder
                 'product_id' => 1,
                 'comment' => 'Muy buen producto, lo recomiendo.',
                 'rating' => 5,
-                'date' => '2025-04-09 18:30:00',
+                'created_at' => '2025-04-07 18:30:00',
+                'updated_at' => '2025-04-07 18:30:00',
+
             ],
             [
                 'user_id' => 2,
                 'product_id' => 1,
                 'comment' => 'Calidad aceptable por el precio.',
                 'rating' => 4,
-                'date' => '2025-04-07 18:30:00',
+                'created_at' => '2025-04-07 18:30:00',
+                'updated_at' => '2025-04-07 18:30:00',
+
             ],
             [
                 'user_id' => 3,
                 'product_id' => 2,
                 'comment' => 'No era lo que esperaba.',
                 'rating' => 2,
-                'date' => '2025-04-05 18:30:00',
+                'created_at' => '2025-04-05 18:30:00',
+                'updated_at' => '2025-04-05 18:30:00',
+
             ]
         ];
 
@@ -44,7 +50,9 @@ class ReviewSeeder extends Seeder
                 'product_id' => $review['product_id'],
                 'comment' => $review['comment'],
                 'rating' => $review['rating'],
-                'date' => $review['date'],
+                'created_at' => $review['created_at'],
+                'updated_at' => $review['updated_at'],
+
             ]);
         }
     }
