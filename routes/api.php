@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Controllers\ProductController;
+use App\Http\Middleware\IsAdmin;
+use Laravel\Sanctum\Http\Middleware;
+
 
 Route::post('/login', function (Request $request) {
     $user = User::where('email', $request->email)->first();
@@ -28,4 +32,9 @@ Route::post('/login', function (Request $request) {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
- 
+
+Route::apiResource('products', ProductController::class)->only(['index']); // pública
+
+Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
+    Route::apiResource('products', ProductController::class)->except(['index']);
+});
