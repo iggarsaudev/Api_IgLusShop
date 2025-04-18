@@ -1,31 +1,28 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
-Route::post('/login', function (Request $request) {
-    $user = User::where('email', $request->email)->first();
+// Registro público
+Route::post('/register', [AuthController::class, 'register']);
 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Credenciales inválidas'], 401);
-    }
+// Login
+Route::post('/login', [AuthController::class, 'login']);
 
-    if ($user->role !== 'admin') {
-        $token = $user->createToken('api-token')->plainTextToken;
-    }
-    else {
-        $token = $user->createToken('admin-token')->plainTextToken;
-    }
+// Logout
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-    return response()->json([
-        'token' => $token,
-        'user' => $user,
-    ]);
+// Rutas protegidas
+Route::middleware('auth:sanctum', IsAdmin::class)->group(function () {
+    // Logout
+    // Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Users
+    Route::apiResource('users', UserController::class);
+
+    // Obtener usuario autenticado
+    Route::get('/user', [AuthController::class, 'index']);
 });
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
- 
