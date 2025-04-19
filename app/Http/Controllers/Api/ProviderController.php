@@ -4,37 +4,35 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ResourceNotFoundException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\StoreUserRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreProviderRequest;
+use App\Http\Requests\UpdateProviderRequest;
+use App\Models\Provider;
 
-class UserController extends Controller
+class ProviderController extends Controller
 {
     /**
-     * Devuelve un listado de todos los usuarios registrados en 
+     * Devuelve un listado de todos los proveedores registrados en 
      * la base de datos.
      * 
      * Requiere autenticación y permisos de administrador.
      * 
-     * Esta función obtiene todos los registros del modelo User y 
-     * los devuelve en formato JSON. Cada usuario incluye 
-     * name, email, password y role.
+     * Esta función obtiene todos los registros del modelo Provider y 
+     * los devuelve en formato JSON. Cada proveedor incluye 
+     * name y description.
      * 
-     * @return \Illuminate\Http\JsonResponse Listado de usuarios 
+     * @return \Illuminate\Http\JsonResponse Listado de proveedores 
      * 
      * @OA\Get( 
-     *     path="/api/users", 
-     *     summary="Obtener todos los usuarios", 
-     *     tags={"Users"}, 
+     *     path="/api/providers", 
+     *     summary="Obtener todos los proveedores", 
+     *     tags={"Providers"}, 
      *     security={{"bearerAuth": {}}},
      *     @OA\Response( 
      *         response=200, 
-     *         description="Lista de usuarios", 
+     *         description="Lista de proveedores", 
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/User")
+     *             @OA\Items(ref="#/components/schemas/Provider")
      *         ) 
      *     ),
      *     @OA\Response(
@@ -49,35 +47,35 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all(), 200);
+        return response()->json(Provider::all(), 200);
     }
 
     /**
-     * Crea un nuevo usuario con los datos proporcionados. 
+     * Crea un nuevo proveedor con los datos proporcionados. 
      * 
      * Requiere autenticación y permisos de administrador.
      * 
      * Valida los campos requeridos antes de almacenar el recurso. 
-     * El campo "role" es opcional, en el caso de no indicarlo será "user". 
-     * Devuelve el ID del usuario creado y mensaje de confirmación si la operación es exitosa.
+     * El campo "description" es opcional. 
+     * Devuelve el ID del proveedor creado y mensaje de confirmación si la operación es exitosa.
      * 
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse ID del usuario creado y mensaje de confirmación
+     * @return \Illuminate\Http\JsonResponse ID del proveedor creado y mensaje de confirmación
      *
      * @OA\Post(
-     *     path="/api/users",
-     *     summary="Crear un nuevo usuario",
-     *     tags={"Users"},
+     *     path="/api/providers",
+     *     summary="Crear un nuevo proveedor",
+     *     tags={"Providers"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/UserCreateSchema")
+     *         @OA\JsonContent(ref="#/components/schemas/ProviderCreateSchema")
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Usuario creado correctamente",
+     *         description="Proveedor creado correctamente",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Usuario creado correctamente."),
+     *             @OA\Property(property="message", type="string", example="Proveedor creado correctamente."),
      *             @OA\Property(property="id", type="integer", example=1)
      *         )
      *     ),
@@ -96,47 +94,45 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreProviderRequest $request)
     {
-        $user = User::create([
+        $provider = Provider::create([
             'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'user', // Asigna el rol enviado o 'user' por defecto
+            'description' => $request->description
         ]);
 
         return response()->json([
-            'message' => 'Usuario creado correctamente.',
-            'id' => $user->id,
+            'message' => 'Proveedor creado correctamente.',
+            'id' => $provider->id,
         ], 201);
     }
 
     /** 
-     * Devuelve los datos de un usuario específico.
+     * Devuelve los datos de un proveedor específico.
      * 
      * Requiere autenticación y permisos de administrador. 
      * 
-     * Busca el usuario por su ID. Si no se encuentra, devuelve un error 
+     * Busca el proveedor por su ID. Si no se encuentra, devuelve un error 
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Detalles del usuario o error
+     * @return \Illuminate\Http\JsonResponse Detalles del proveedor o error
      * 
      * @OA\Get( 
-     *      path="/api/users/{id}", 
-     *      summary="Obtener un usuario por ID", 
-     *      tags={"Users"}, 
+     *      path="/api/providers/{id}", 
+     *      summary="Obtener un proveedor por ID", 
+     *      tags={"Providers"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del usuario", 
+     *          description="ID del proveedor", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Detalles del usuario", 
-     *          @OA\JsonContent(ref="#/components/schemas/User") 
+     *          description="Detalles del proveedor", 
+     *          @OA\JsonContent(ref="#/components/schemas/Provider") 
      *      ),
      *      @OA\Response(
      *         response=401,
@@ -157,50 +153,50 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::find($id);
+        $provider = Provider::find($id);
 
-        if (!$user) {
+        if (!$provider) {
             return response()->json(['error' => 'Recurso no encontrado'], 404);
         }
 
-        return response()->json($user);
+        return response()->json($provider);
     }
 
     /** 
-     * Actualiza los datos de un usuario existente.
+     * Actualiza los datos de un proveedor existente.
      * 
      * Requiere autenticación y permisos de administrador.  
      * 
-     * Permite actualizar uno o varios campos del usuario. 
-     * Devuelve el usuario actualizado si todo es correcto. 
+     * Permite actualizar uno o varios campos del proveedor. 
+     * Devuelve el proveedor actualizado si todo es correcto. 
      * 
      * @param \Illuminate\Http\Request $request 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Usuario actualizado o error 
+     * @return \Illuminate\Http\JsonResponse Proveedor actualizado o error 
      * 
      * @OA\Put( 
-     *      path="/api/users/{id}", 
-     *      summary="Actualizar un usuario", 
-     *      tags={"Users"}, 
+     *      path="/api/providers/{id}", 
+     *      summary="Actualizar un proveedor", 
+     *      tags={"Providers"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del usuario a actualizar", 
+     *          description="ID del proveedor a actualizar", 
      *          @OA\Schema(type="integer") 
      *      ), @OA\RequestBody( 
      *          required=true, 
      *          @OA\JsonContent( 
-     *              ref="#/components/schemas/UserUpdateSchema" 
+     *              ref="#/components/schemas/ProviderUpdateSchema" 
      *          ) 
      *      ), 
      *      @OA\Response(
      *          response=200,
-     *          description="Usuario actualizado correctamente",
+     *          description="Proveedor actualizado correctamente",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Usuario actualizado correctamente"),
-     *              @OA\Property(property="user", ref="#/components/schemas/User")
+     *              @OA\Property(property="message", type="string", example="Proveedor actualizado correctamente"),
+     *              @OA\Property(property="provider", ref="#/components/schemas/Provider")
      *          )
      *      ), 
      *      @OA\Response(
@@ -227,51 +223,47 @@ class UserController extends Controller
      *      ) 
      * ) 
      */
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateProviderRequest $request, $id)
     {
-        $user = User::find($id);
+        $provider = Provider::find($id);
 
-        if ($request->has('name')) $user->name = $request->name;
-        if ($request->has('email')) $user->email = $request->email;
-        if ($request->has('password')) $user->password = Hash::make($request->password);
-        if ($request->has('role') && Auth::user()->role === 'admin') {
-            $user->role = $request->role;
-        }
+        if ($request->has('name')) $provider->name = $request->name;
+        if ($request->has('description')) $provider->description = $request->description;
 
-        $user->save();
+        $provider->save();
 
         return response()->json([
-            'message' => 'Usuario actualizado correctamente.',
-            'user' => $user,
+            'message' => 'Proveedor actualizado correctamente.',
+            'provider' => $provider,
         ], 200);
     }
 
     /** 
-     * Elimina un usuario por su ID. 
+     * Elimina un proveedor por su ID. 
      * 
      * Requiere autenticación y permisos de administrador.
      * 
-     * Si el usuario no existe, devuelve un error 404. 
+     * Si el proveedor no existe, devuelve un error 404. 
      * Si se elimina correctamente, devuelve un código 204. 
      * 
      * @param string $id 
      * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
      * 
      * @OA\Delete( 
-     *      path="/api/users/{id}", 
-     *      summary="Elimina un usuario", 
-     *      tags={"Users"},
+     *      path="/api/providers/{id}", 
+     *      summary="Elimina un proveedor", 
+     *      tags={"Providers"},
      *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del usuario a eliminar", 
+     *          description="ID del proveedor a eliminar", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Usuario eliminado correctamente" 
+     *          description="Proveedor eliminado correctamente" 
      *      ), 
      *      @OA\Response(
      *         response=401,
@@ -288,18 +280,18 @@ class UserController extends Controller
      *      ), 
      * ) 
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $user = User::find($id);
+        $provider = Provider::find($id);
 
-        if (!$user) {
+        if (!$provider) {
             throw new ResourceNotFoundException('Recurso no encontrado');
         }
 
-        $user->delete();
+        $provider->delete();
 
         return response()->json([
-            'message' => 'Usuario eliminado.'
+            'message' => 'Proveedor eliminado.'
         ], 200);
     }
 }
