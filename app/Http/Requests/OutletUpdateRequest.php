@@ -27,8 +27,8 @@ class OutletUpdateRequest extends FormRequest
             'price' => 'sometimes|decimal:0,2',
             'stock' => 'integer',
             'image' => 'url',
-            'has_discount'=>'sometimes|accepted',
-            'discount'=> 'numeric|gt:0',
+            'has_discount'=>'sometimes|boolean',
+            'discount'=> 'sometimes|numeric',
             'category_id'=>'sometimes|integer|exists:categories,id',
             'provider_id'=>'sometimes|integer|exists:providers,id'
         ];

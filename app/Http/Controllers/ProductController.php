@@ -8,9 +8,30 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Requests\ProductUpdateRequest;
 
 class ProductController extends Controller
-{
-    /**
-     * Display a listing of the resource.
+{   /**
+     * Devuelve un listado de todos los productos que no tienen descuento.
+     * 
+     * Este endpoint es público.
+     * 
+     * Esta función obtiene todos  los productos que no tienen descuento del 
+     * modelo Product y los devuelve en formato JSON. Cada producto incluye 
+     * id, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.
+     * 
+     * @return \Illuminate\Http\JsonResponse Listado de productos sin descuento 
+     * 
+     * @OA\Get( 
+     *     path="api/products", 
+     *     summary="Obtener todos los productos sin descuento", 
+     *     tags={"Products"}, 
+     *     @OA\Response( 
+     *         response=200, 
+     *         description="Lista de productos sin descuento (endpoint público, no requiere autenticación)", 
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Product")
+     *         ) 
+     *     ),
+     * )
      */
     public function index()
     {
@@ -18,7 +39,63 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crea un nuevo producto con los datos proporcionados. 
+     * 
+     * Requiere autenticación y permisos de administrador.
+     * 
+     * Al crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:
+     * 
+     * - `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.
+     * - `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.
+     * - `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.
+     * - `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.
+     * - `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.
+     * 
+     * Los siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:
+     * 
+     * - `stock`: Número entero que indica la cantidad disponible del producto en stock.
+     * - `image`: URL válida que apunta a la imagen del producto.
+     * - `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre falso para los productos estándar. Si se quiere generar un producto 
+     *    con descuento se debe hacer desde el endpoint correspondiente de outlet.
+     * - `discount`: El descuento aplicado al producto. Si `has_discount` es falso, este valor debe ser 0.
+     * 
+     * La validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.
+     *
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse ID del producto creado y mensaje de confirmación
+     *
+     * @OA\Post(
+     *     path="/api/products",
+     *     summary="Crear un nuevo producto",
+     *     tags={"Products"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ProductCreate")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Producto creado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto creado correctamente."),
+     *             @OA\Property(property="id", type="integer", example=21)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="No autorizado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Errores de validación",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
+     *     )
+     * )
      */
     public function store(ProductRequest $request)
     {
@@ -27,8 +104,41 @@ class ProductController extends Controller
             return response()->json(['id' => $product->id], 201);
     }
 
-    /**
-     * Display the specified resource.
+    /** 
+     * Devuelve los datos de un producto específico.
+     * 
+     * Es un endpoint público 
+     * 
+     * Busca el producto por su ID y comprueba que no pertenezca al outlet.
+     * Si no se encuentra, devuelve un error 
+     * 
+     * @param string $id 
+     * @return \Illuminate\Http\JsonResponse Detalles del producto o error
+     * 
+     * @OA\Get( 
+     *      path="/api/products/{id}", 
+     *      summary="Obtener un producto por ID", 
+     *      tags={"Products"}, 
+     *      @OA\Parameter( 
+     *          name="id", 
+     *          in="path", 
+     *          required=true, 
+     *          description="ID del producto", 
+     *          @OA\Schema(type="integer") 
+     *      ), 
+     *      @OA\Response( 
+     *          response=200, 
+     *          description="Detalles del producto", 
+     *          @OA\JsonContent(ref="#/components/schemas/Product") 
+     *      ),
+     *      @OA\Response( 
+     *          response=404, 
+     *          description="Producto no encontrado o perteneciente al outlet", 
+     *          @OA\JsonContent( 
+     *              ref="#/components/schemas/NotFoundError" 
+     *          ) 
+     *      ) 
+     * ) 
      */
     public function show(string $id)
     {
@@ -48,8 +158,69 @@ class ProductController extends Controller
         return response()->json($product, 200);
             }
 
-    /**
-     * Update the specified resource in storage.
+    /** 
+     * Actualiza los datos de un producto existente ya sea del outlet o no.
+     * 
+     * Requiere autenticación y permisos de administrador.  
+     * 
+     * Permite actualizar uno o varios campos del producto. 
+     * Devuelve el producto actualizado si todo es correcto. 
+     * 
+     * Permite actualizar el campo has_discount a un valor truthy para pasar el producto al 
+     * endpoint de outlet
+     * 
+     * @param \Illuminate\Http\Request $request 
+     * @param string $id 
+     * @return \Illuminate\Http\JsonResponse Producto actualizado o error 
+     * 
+     * @OA\Put( 
+     *      path="/api/products/{id}", 
+     *      summary="Actualizar un producto", 
+     *      tags={"Products"}, 
+     *      security={{"bearerAuth": {}}},
+     *      @OA\Parameter( 
+     *          name="id", 
+     *          in="path", 
+     *          required=true, 
+     *          description="ID del producto a actualizar", 
+     *          @OA\Schema(type="integer") 
+     *      ), @OA\RequestBody( 
+     *          required=true, 
+     *          @OA\JsonContent( 
+     *              ref="#/components/schemas/ProductUpdate" 
+     *          ) 
+     *      ), 
+     *      @OA\Response(
+     *          response=200,
+     *          description="Producto actualizado correctamente",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Producto actualizado correctamente"),
+     *              @OA\Property(property="product", ref="#/components/schemas/ProductUpdate")
+     *          )
+     *      ), 
+     *      @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="No autorizado"
+     *     ), 
+     *     @OA\Response( 
+     *          response=404, 
+     *          description="Producto no encontrado", 
+     *          @OA\JsonContent( 
+     *              ref="#/components/schemas/NotFoundError" 
+     *          ) 
+     *      ), 
+     *      @OA\Response( 
+     *          response=422, 
+     *          description="Errores de validación", 
+     *          @OA\JsonContent( 
+     *              ref="#/components/schemas/ValidationError" 
+     *          ) 
+     *      ) 
+     * ) 
      */
     public function update(ProductUpdateRequest $request, string $id)
     {
@@ -63,10 +234,54 @@ class ProductController extends Controller
         
         // Actualizamos los campos
         $product->update($request->all());
+
+        return response()->json([
+            'message' => 'Producto actualizado correctamente.',
+            'product' => $product,
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
+    /** 
+     * Elimina un producto que no pertenezca al outlet por su ID. 
+     * 
+     * Requiere autenticación y permisos de administrador.
+     * 
+     * Si el producto no existe, devuelve un error 404. 
+     * Si se elimina correctamente, devuelve un código 204. 
+     * 
+     * @param string $id 
+     * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
+     * 
+     * @OA\Delete( 
+     *      path="/api/products/{id}", 
+     *      summary="Elimina un producto", 
+     *      tags={"Products"},
+     *      security={{"bearerAuth": {}}}, 
+     *      @OA\Parameter( 
+     *          name="id", 
+     *          in="path", 
+     *          required=true, 
+     *          description="ID del producto a eliminar", 
+     *          @OA\Schema(type="integer") 
+     *      ), 
+     *      @OA\Response( 
+     *          response=204, 
+     *          description="Producto eliminado correctamente" 
+     *      ), 
+     *      @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *      ),
+     *      @OA\Response(
+     *         response=403,
+     *         description="No autorizado"
+     *      ),
+     *      @OA\Response( 
+     *          response=404, 
+     *          description="Producto no encontrado", 
+     *          @OA\JsonContent( ref="#/components/schemas/NotFoundError" )
+     *      ), 
+     * ) 
      */
     public function destroy(string $id)
     {
