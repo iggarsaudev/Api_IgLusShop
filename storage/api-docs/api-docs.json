@@ -194,6 +194,283 @@
                 ]
             }
         },
+        "/api/providers": {
+            "get": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Obtener todos los proveedores",
+                "description": "Devuelve un listado de todos los proveedores registrados en \nla base de datos.\n\nRequiere autenticación y permisos de administrador.\n\nEsta función obtiene todos los registros del modelo Provider y \nlos devuelve en formato JSON. Cada proveedor incluye \nname y description.",
+                "operationId": "d99e139f235d5222c74789c37512fc95",
+                "responses": {
+                    "200": {
+                        "description": "Lista de proveedores",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Provider"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Crear un nuevo proveedor",
+                "description": "Crea un nuevo proveedor con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nValida los campos requeridos antes de almacenar el recurso. \nEl campo \"description\" es opcional. \nDevuelve el ID del proveedor creado y mensaje de confirmación si la operación es exitosa.",
+                "operationId": "8d61f862240fcb54ca4379f8211c756f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProviderCreateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Proveedor creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Proveedor creado correctamente."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/providers/{id}": {
+            "get": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Obtener un proveedor por ID",
+                "description": "Devuelve los datos de un proveedor específico.\n\nRequiere autenticación y permisos de administrador. \n\nBusca el proveedor por su ID. Si no se encuentra, devuelve un error",
+                "operationId": "2e8a9bc6272603d6fc877d77d9472c78",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del proveedor",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del proveedor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Provider"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Actualizar un proveedor",
+                "description": "Actualiza los datos de un proveedor existente.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del proveedor. \nDevuelve el proveedor actualizado si todo es correcto.",
+                "operationId": "9f26750a48584c4e9d4a861e4d024d1c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del proveedor a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProviderUpdateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Proveedor actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Proveedor actualizado correctamente"
+                                        },
+                                        "provider": {
+                                            "$ref": "#/components/schemas/Provider"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Elimina un proveedor",
+                "description": "Elimina un proveedor por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el proveedor no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "operationId": "1aa03e6dae527bbdd64b73a803e0a142",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del proveedor a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Proveedor eliminado correctamente"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
@@ -328,7 +605,7 @@
                         "description": "No autorizado"
                     },
                     "404": {
-                        "description": "Usuario no encontrado",
+                        "description": "Recurso no encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -399,7 +676,7 @@
                         "description": "No autorizado"
                     },
                     "404": {
-                        "description": "Usuario no encontrado",
+                        "description": "Recurso no encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -454,7 +731,7 @@
                         "description": "No autorizado"
                     },
                     "404": {
-                        "description": "Usuario no encontrado",
+                        "description": "Recurso no encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -480,6 +757,69 @@
                     "message": {
                         "type": "string",
                         "example": "Usuario no encontrado"
+                    }
+                },
+                "type": "object"
+            },
+            "ProviderCreateSchema": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Nombre Proveedor"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descripción del nuevo proveedor"
+                    }
+                },
+                "type": "object"
+            },
+            "Provider": {
+                "title": "Provider",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Nombre Proveedor"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descripción del nuevo proveedor"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-05 21:45:59"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-05 21:45:59"
+                    }
+                },
+                "type": "object"
+            },
+            "ProviderUpdateSchema": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Nombre Proveedor"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descripción del nuevo proveedor"
                     }
                 },
                 "type": "object"
@@ -598,7 +938,7 @@
                     },
                     "errors": {
                         "properties": {
-                            "titulo": {
+                            "error": {
                                 "type": "array",
                                 "items": {
                                     "type": "string",
@@ -624,6 +964,10 @@
         {
             "name": "Autenticación",
             "description": "Autenticación"
+        },
+        {
+            "name": "Providers",
+            "description": "Providers"
         },
         {
             "name": "Users",

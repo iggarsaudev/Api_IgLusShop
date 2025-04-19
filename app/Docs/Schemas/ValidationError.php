@@ -16,7 +16,7 @@ namespace App\Docs\Schemas;
  *          property="errors", 
  *          type="object", 
  *          @OA\Property( 
- *              property="titulo", 
+ *              property="error", 
  *              type="array", 
  *              @OA\Items( 
  *                  type="string", 

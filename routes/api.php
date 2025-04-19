@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProviderController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ Route::middleware('auth:sanctum', IsAdmin::class)->group(function () {
 
     // Users
     Route::apiResource('users', UserController::class);
+
+    // Providers
+    Route::apiResource('providers', ProviderController::class);
 
     // Obtener usuario autenticado
     Route::get('/user', [AuthController::class, 'index']);
