@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OutletController;
 use App\Http\Middleware\IsAdmin;
-use Laravel\Sanctum\Http\Middleware;
 
 
 Route::post('/login', function (Request $request) {
@@ -33,8 +33,14 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('products', ProductController::class)->only(['index']); // pública
+Route::apiResource('products', ProductController::class)->only(['index','show']); // pública
 
 Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
-    Route::apiResource('products', ProductController::class)->except(['index']);
+    Route::apiResource('products', ProductController::class)->except(['index','show']);
+});
+
+Route::apiResource('outlet', OutletController::class)->only(['index','show']); // pública
+
+Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
+    Route::apiResource('outlet', OutletController::class)->except(['index','show']);
 });
