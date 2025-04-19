@@ -1,37 +1,33 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OutletController;
-use App\Http\Middleware\IsAdmin;
 
+// Registro público
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/login', function (Request $request) {
-    $user = User::where('email', $request->email)->first();
+// Login
+Route::post('/login', [AuthController::class, 'login']);
 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Credenciales inválidas'], 401);
-    }
+// Logout
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-    if ($user->role !== 'admin') {
-        $token = $user->createToken('api-token')->plainTextToken;
-    }
-    else {
-        $token = $user->createToken('admin-token')->plainTextToken;
-    }
+// Rutas protegidas
+Route::middleware('auth:sanctum', IsAdmin::class)->group(function () {
+    // Logout
+    // Route::post('/logout', [AuthController::class, 'logout']);
 
-    return response()->json([
-        'token' => $token,
-        'user' => $user,
-    ]);
+    // Users
+    Route::apiResource('users', UserController::class);
+
+    // Obtener usuario autenticado
+    Route::get('/user', [AuthController::class, 'index']);
 });
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 Route::apiResource('products', ProductController::class)->only(['index','show']); // pública
 
@@ -44,3 +40,4 @@ Route::apiResource('outlet', OutletController::class)->only(['index','show']); /
 Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
     Route::apiResource('outlet', OutletController::class)->except(['index','show']);
 });
+
