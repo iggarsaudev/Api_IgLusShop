@@ -1199,9 +1199,6 @@
                     "price",
                     "category_id",
                     "provider_id"
-            "ProviderCreateSchema": {
-                "required": [
-                    "name"
                 ],
                 "properties": {
                     "name": {
@@ -1250,11 +1247,6 @@
                         "description": "ID del proveedor relacionada (clave foránea a Provider)",
                         "type": "integer",
                         "example": 5
-                        "example": "Nombre Proveedor"
-                    },
-                    "description": {
-                        "type": "string",
-                        "example": "Descripción del nuevo proveedor"
                     }
                 },
                 "type": "object"
@@ -1333,10 +1325,6 @@
                     "category_id",
                     "created_at",
                     "updated_at"
-            "Provider": {
-                "title": "Provider",
-                "required": [
-                    "name"
                 ],
                 "properties": {
                     "id": {
@@ -1384,11 +1372,6 @@
                         "description": "ID de la categoría relacionada (clave foránea a Category)",
                         "type": "integer",
                         "example": 1
-                        "example": "Nombre Proveedor"
-                    },
-                    "description": {
-                        "type": "string",
-                        "example": "Descripción del nuevo proveedor"
                     },
                     "created_at": {
                         "type": "string",
@@ -1448,6 +1431,57 @@
                         "description": "ID del proveedor relacionada (clave foránea a Provider)",
                         "type": "integer",
                         "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "ProviderCreateSchema": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Nombre Proveedor"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descripción del nuevo proveedor"
+                    }
+                },
+                "type": "object"
+            },
+            "Provider": {
+                "title": "Provider",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Nombre Proveedor"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Descripción del nuevo proveedor"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-05 21:45:59"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-05 21:45:59"
+                    }
+                },
+                "type": "object"
+            },
             "ProviderUpdateSchema": {
                 "required": [
                     "name"
@@ -1460,7 +1494,6 @@
                     "description": {
                         "type": "string",
                         "example": "Descripción del nuevo proveedor"
-
                     }
                 },
                 "type": "object"
