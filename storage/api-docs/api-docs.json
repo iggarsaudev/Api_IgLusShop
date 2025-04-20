@@ -471,6 +471,273 @@
                 ]
             }
         },
+        "/api/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Obtener todas las reviews",
+                "description": "Devuelve un listado de todas las reseñas de la base de datos.\n\n\nEsta función obtiene todos los registros del modelo Review y \nlos devuelve en formato JSON.",
+                "operationId": "72b70a0c4b8c3af58b7e8a6a8e659d77",
+                "responses": {
+                    "200": {
+                        "description": "Lista de reviews",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Review"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Crear una nueva review",
+                "description": "Crea una nueva review con los datos proporcionados. \n\nRequiere autenticación\n\nValida los campos requeridos antes de almacenar el recurso. \nEl campo \"comment\" es opcional. \nDevuelve el ID de la review creada y mensaje de confirmación si la operación es exitosa.",
+                "operationId": "f382dabdc7e71b67c93117f17f1fb255",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReviewCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review creada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review creada correctamente."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews/{id}": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Obtener una review por su ID",
+                "description": "Devuelve los datos de una review específica.\n\n\nBusca la review por su ID. Si no se encuentra, devuelve un error",
+                "operationId": "1ebe1abb8f05e98c0059b25db9911ebe",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la review",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Review"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Actualizar una review",
+                "description": "Actualiza los datos de una review existente.\n\nRequiere autenticación.\nSolo se puede actualizar si la review ha sido creada por el usuario autenticado\nPermite actualizar uno o varios campos de una review. \nDevuelve la review actualizada si todo es correcto.",
+                "operationId": "47513391c5f4f9ee05b348e5d603d96b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la review a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReviewUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review actualizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review actualizada correctamente"
+                                        },
+                                        "review": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Elimina una review",
+                "description": "Elimina una review por su ID. \n\nRequiere autenticación.\n\nSolo se puede eliminar si la review ha sido creada por el usuario autenticado\n\nSi la review no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "operationId": "3c59dee71ea9b81870ffa682d1ff2bae",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la review a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review eliminado correctamente"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Recurso no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
@@ -1187,7 +1454,7 @@
                 "properties": {
                     "message": {
                         "type": "string",
-                        "example": "Usuario no encontrado"
+                        "example": "Recurso no encontrado"
                     }
                 },
                 "type": "object"
@@ -1498,6 +1765,92 @@
                 },
                 "type": "object"
             },
+            "ReviewCreate": {
+                "required": [
+                    "product_id",
+                    "rating"
+                ],
+                "properties": {
+                    "product_id": {
+                        "description": "Id del producto al que apunta la reseña (Clave foránea a products)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": "El producto es de buena calidad"
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "Review": {
+                "title": "Review",
+                "required": [
+                    "id",
+                    "user_id",
+                    "product_id",
+                    "comment",
+                    "rating"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "description": "Id del usuario que crea la reseña (Clave foránea a users)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "description": "Id del producto al que apunta la reseña (Clave foránea a products)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": "El producto es de buena calidad"
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-05 21:45:59"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-05 21:45:59"
+                    }
+                },
+                "type": "object"
+            },
+            "ReviewUpdate": {
+                "title": "Review",
+                "properties": {
+                    "product_id": {
+                        "description": "Id del producto al que apunta la reseña (Clave foránea a products)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": "El producto es de buena calidad"
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
             "UserCreateSchema": {
                 "required": [
                     "name",
@@ -1642,6 +1995,10 @@
         {
             "name": "Providers",
             "description": "Providers"
+        },
+        {
+            "name": "Reviews",
+            "description": "Reviews"
         },
         {
             "name": "Users",

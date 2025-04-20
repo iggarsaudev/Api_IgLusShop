@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OutletController;
+use App\Http\Controllers\Api\ReviewController;
 
 // Registro público
 Route::post('/register', [AuthController::class, 'register']);
@@ -45,3 +46,9 @@ Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
     Route::apiResource('outlet', OutletController::class)->except(['index','show','update']);
 });
 
+
+Route::apiResource('reviews', ReviewController::class)->only(['index','show']); // pública
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('reviews', ReviewController::class)->except(['index','show']);
+});
