@@ -4,12 +4,12 @@ namespace App\Exceptions;
 
 use Exception;
 
-class UserNotFoundException extends Exception
+class ResourceNotFoundException extends Exception
 {
     public function render($request)
     {
         return response()->json([
-            'message' => $this->getMessage() ?: 'Usuario no encontrado'
+            'message' => 'Recurso no encontrado'
         ], 404);
     }
 }
