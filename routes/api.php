@@ -38,6 +38,6 @@ Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
 Route::apiResource('outlet', OutletController::class)->only(['index','show']); // pública
 
 Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
-    Route::apiResource('outlet', OutletController::class)->except(['index','show']);
+    Route::apiResource('outlet', OutletController::class)->except(['index','show','update']);
 });
 

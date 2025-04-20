@@ -265,7 +265,7 @@ class ProductController extends Controller
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
-     *          response=204, 
+     *          response=200, 
      *          description="Producto eliminado correctamente" 
      *      ), 
      *      @OA\Response(
@@ -301,7 +301,7 @@ class ProductController extends Controller
         $product->delete();
         return response()->json(
         ['message' => 'Producto eliminado correctamente'],
-        204
+        200
         );
 
     }
