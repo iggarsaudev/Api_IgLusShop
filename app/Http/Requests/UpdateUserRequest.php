@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Exceptions\UserNotFoundException;
+use App\Exceptions\ResourceNotFoundException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\User;
@@ -23,7 +23,7 @@ class UpdateUserRequest extends FormRequest
         $this->userToUpdate = User::find($id);
 
         if (!$this->userToUpdate) {
-            throw new UserNotFoundException('Usuario no encontrado');
+            throw new ResourceNotFoundException('Recurso no encontrado');
         }
     }
 
