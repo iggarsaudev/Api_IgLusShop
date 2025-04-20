@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OutletController;
 
 // Registro público
 Route::post('/register', [AuthController::class, 'register']);
@@ -30,3 +32,16 @@ Route::middleware('auth:sanctum', IsAdmin::class)->group(function () {
     // Obtener usuario autenticado
     Route::get('/user', [AuthController::class, 'index']);
 });
+
+Route::apiResource('products', ProductController::class)->only(['index','show']); // pública
+
+Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
+    Route::apiResource('products', ProductController::class)->except(['index','show']);
+});
+
+Route::apiResource('outlet', OutletController::class)->only(['index','show']); // pública
+
+Route::middleware('auth:sanctum',IsAdmin::class)->group(function () {
+    Route::apiResource('outlet', OutletController::class)->except(['index','show','update']);
+});
+

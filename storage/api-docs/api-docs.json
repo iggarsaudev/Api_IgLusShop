@@ -747,6 +747,437 @@
                     }
                 ]
             }
+        },
+        "/api/outlet": {
+            "get": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Obtener todos los productos sin descuento",
+                "description": "Devuelve un listado de todos los productos que tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
+                "operationId": "6b3f392eeac2168c52aef76b0b640fce",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Crear un nuevo producto del outlet",
+                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre verdarep para los productos del outlet.\n   Si se quiere generar un producto sin descuento se debe hacer desde el endpoint correspondiente de products.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es verdadero, este valor debe ser mayor de 0 y menor de 100.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
+                "operationId": "3c74ec1c554a925bb5fd4a6a896f3c64",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OutletCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado correctamente."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 21
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/outlet/{id}": {
+            "get": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Obtener un producto del outlet por ID",
+                "description": "Devuelve los datos de un producto del outlet específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que pertenezca al outlet.\nSi no se encuentra, devuelve un error",
+                "operationId": "40bdf209c2150f57aad9caf0cb26de27",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del producto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado o perteneciente al outlet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Elimina un producto del outlet",
+                "description": "Elimina un producto que pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "operationId": "8b2db8f3e207d3a08e9a77dc574c24a3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado correctamente"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Obtener todos los productos sin descuento",
+                "description": "Devuelve un listado de todos los productos que no tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que no tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
+                "operationId": "c3cf40a10607096df7f066e25f305da3",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Crear un nuevo producto",
+                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre falso para los productos estándar. Si se quiere generar un producto \n   con descuento se debe hacer desde el endpoint correspondiente de outlet.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es falso, este valor debe ser 0.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
+                "operationId": "e8185e307706e2cd84bbcf5171e2f09d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado correctamente."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 21
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Obtener un producto por ID",
+                "description": "Devuelve los datos de un producto específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que no pertenezca al outlet.\nSi no se encuentra, devuelve un error",
+                "operationId": "7ab21ddb713501f3d4c2914892c02a21",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del producto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado o perteneciente al outlet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Actualizar un producto",
+                "description": "Actualiza los datos de un producto existente ya sea del outlet o no.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del producto. \nDevuelve el producto actualizado si todo es correcto. \n\nPermite actualizar el campo has_discount a un valor truthy para pasar el producto al \nendpoint de outlet",
+                "operationId": "6a7e11900844cd85cff66e662b82bd4c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto actualizado correctamente"
+                                        },
+                                        "product": {
+                                            "$ref": "#/components/schemas/ProductUpdate"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Elimina un producto",
+                "description": "Elimina un producto que no pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "operationId": "e80a6ca46716acee6b47ea1ac91663c0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado correctamente"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "404": {
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -761,6 +1192,13 @@
                 },
                 "type": "object"
             },
+            "OutletCreate": {
+                "required": [
+                    "name",
+                    "description",
+                    "price",
+                    "category_id",
+                    "provider_id"
             "ProviderCreateSchema": {
                 "required": [
                     "name"
@@ -768,6 +1206,50 @@
                 "properties": {
                     "name": {
                         "type": "string",
+                        "minLength": 3,
+                        "example": "Camiseta Deportiva"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Camiseta técnica de alto rendimiento"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 29.99
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/product.jpg"
+                    },
+                    "has_discount": {
+                        "description": "Debe ser verdadero o equivalente (accepted). El producto creado debe tener descuento",
+                        "type": "boolean",
+                        "enum": [
+                            true
+                        ],
+                        "example": true
+                    },
+                    "discount": {
+                        "description": "Debe ser un valor mayor que 0 y menor o igual que 100.",
+                        "type": "number",
+                        "example": 15
+                    },
+                    "category_id": {
+                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "provider_id": {
+                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "type": "integer",
+                        "example": 5
                         "example": "Nombre Proveedor"
                     },
                     "description": {
@@ -777,6 +1259,80 @@
                 },
                 "type": "object"
             },
+            "ProductCreate": {
+                "required": [
+                    "name",
+                    "description",
+                    "price",
+                    "category_id",
+                    "provider_id"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 3,
+                        "example": "Camiseta Deportiva"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Camiseta técnica de alto rendimiento"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 29.99
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/product.jpg"
+                    },
+                    "has_discount": {
+                        "description": "Debe ser false o equivalente (declined). El producto creado NO puede tener descuento inicialmente.",
+                        "type": "boolean",
+                        "enum": [
+                            false
+                        ],
+                        "example": false
+                    },
+                    "discount": {
+                        "description": "Debe ser 0 si no hay descuento.",
+                        "type": "number",
+                        "example": 0
+                    },
+                    "category_id": {
+                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "provider_id": {
+                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "Product": {
+                "title": "Product",
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "price",
+                    "stock",
+                    "image",
+                    "has_discount",
+                    "discount",
+                    "provider_id",
+                    "category_id",
+                    "created_at",
+                    "updated_at"
             "Provider": {
                 "title": "Provider",
                 "required": [
@@ -789,6 +1345,45 @@
                     },
                     "name": {
                         "type": "string",
+                        "example": "Camiseta Deportiva"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Camiseta técnica de alto rendimiento"
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": 29.99
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://www.ejemplo.com/imagenes/camiseta.jpg"
+                    },
+                    "has_discount": {
+                        "description": "Este campo debe ser siempre false. si se cambia a true el producto pasa al outlet",
+                        "type": "boolean",
+                        "default": 0,
+                        "example": false
+                    },
+                    "discount": {
+                        "description": "Si has_discount es falsy entonces discount debe ser 0",
+                        "type": "number",
+                        "example": 0
+                    },
+                    "provider_id": {
+                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "category_id": {
+                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "type": "integer",
+                        "example": 1
                         "example": "Nombre Proveedor"
                     },
                     "description": {
@@ -808,6 +1403,51 @@
                 },
                 "type": "object"
             },
+            "ProductUpdate": {
+                "title": "Actualización de Producto",
+                "description": "Schema para actualizar un producto",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 3,
+                        "example": "Camiseta Deportiva"
+                    },
+                    "description": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Camiseta cómoda para entrenamiento"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 49.99
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/images/producto.png"
+                    },
+                    "has_discount": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "discount": {
+                        "type": "number",
+                        "example": 0
+                    },
+                    "category_id": {
+                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "provider_id": {
+                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "type": "integer",
+                        "example": 2
             "ProviderUpdateSchema": {
                 "required": [
                     "name"
@@ -820,6 +1460,7 @@
                     "description": {
                         "type": "string",
                         "example": "Descripción del nuevo proveedor"
+
                     }
                 },
                 "type": "object"
@@ -972,6 +1613,14 @@
         {
             "name": "Users",
             "description": "Users"
+        },
+        {
+            "name": "Outlet",
+            "description": "Outlet"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
         }
     ]
 }
