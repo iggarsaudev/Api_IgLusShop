@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\OutletRequest;
-use App\Http\Requests\ProductUpdateRequest;
+
 class OutletController extends Controller
 {
  /**

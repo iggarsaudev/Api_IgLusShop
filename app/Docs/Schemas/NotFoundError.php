@@ -10,7 +10,7 @@ namespace App\Docs\Schemas;
  *      @OA\Property( 
  *          property="message", 
  *          type="string", 
- *          example="Usuario no encontrado" 
+ *          example="Recurso no encontrado" 
  *      ) 
  * ) 
  */
