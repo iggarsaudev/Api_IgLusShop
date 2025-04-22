@@ -32,16 +32,16 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre es obligatorio',
-            'name.string' => 'El nombre debe ser una cadena de caracteres',
-            'name.max' => 'Máximo 255 caracteres',
-            'email.required' => 'El correo electrónico es obligatorio',
-            'email.email' => 'Debe ser un correo electrónico válido',
-            'email.unique' => 'El correo electrónico ya está utilizado',
-            'password.required' => 'La contraseña es obligatoria',
-            'password.string' => 'La contraseña deben ser una cadena de caracteres',
-            'password.min' => 'La contraseña debe tener mínimo 8 caracteres',
-            'role.in' => 'El rol debe ser "user" o "admin"'
+            'name.required' => 'Name is required',
+            'name.string' => 'Name must be a string',
+            'name.max' => 'Maximum 255 characters',
+            'email.required' => 'Email is required',
+            'email.email' => 'Must be a valid email',
+            'email.unique' => 'Email is already taken',
+            'password.required' => 'Password is required',
+            'password.string' => 'Password must be a string',
+            'password.min' => 'Password must be at least 8 characters',
+            'role.in' => 'Role must be "user" or "admin"'
         ];
     }
 }

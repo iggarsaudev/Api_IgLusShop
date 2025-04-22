@@ -13,25 +13,22 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     /**
-     * Devuelve un listado de todos los usuarios registrados en 
-     * la base de datos.
+     * Returns a list of all users registered in the database.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Esta función obtiene todos los registros del modelo User y 
-     * los devuelve en formato JSON. Cada usuario incluye 
-     * name, email, password y role.
+     * This function retrieves all records from the User model and returns them in JSON format. Each user includes a name, email, password, and role.
      * 
-     * @return \Illuminate\Http\JsonResponse Listado de usuarios 
+     * @return \Illuminate\Http\JsonResponse User List 
      * 
      * @OA\Get( 
      *     path="/api/users", 
-     *     summary="Obtener todos los usuarios", 
+     *     summary="Get all users", 
      *     tags={"Users"}, 
      *     security={{"bearerAuth": {}}},
      *     @OA\Response( 
      *         response=200, 
-     *         description="Lista de usuarios", 
+     *         description="User List", 
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/User")
@@ -43,7 +40,7 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ) 
      * )
      */
@@ -53,20 +50,20 @@ class UserController extends Controller
     }
 
     /**
-     * Crea un nuevo usuario con los datos proporcionados. 
+     * Creates a new user with the provided data.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Valida los campos requeridos antes de almacenar el recurso. 
-     * El campo "role" es opcional, en el caso de no indicarlo será "user". 
-     * Devuelve el ID del usuario creado y mensaje de confirmación si la operación es exitosa.
+     * Validates required fields before storing the resource.
+     * The "role" field is optional; if not specified, it will be "user".
+     * Returns the created user ID and a confirmation message if the operation is successful.
      * 
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse ID del usuario creado y mensaje de confirmación
+     * @return \Illuminate\Http\JsonResponse Created user ID and confirmation message
      *
      * @OA\Post(
      *     path="/api/users",
-     *     summary="Crear un nuevo usuario",
+     *     summary="Create a new user",
      *     tags={"Users"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
@@ -75,9 +72,9 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Usuario creado correctamente",
+     *         description="Successfully created user",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Usuario creado correctamente."),
+     *             @OA\Property(property="message", type="string", example="Successfully created user."),
      *             @OA\Property(property="id", type="integer", example=1)
      *         )
      *     ),
@@ -87,11 +84,11 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Errores de validación",
+     *         description="Validation errors",
      *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
      *     )
      * )
@@ -106,36 +103,36 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Usuario creado correctamente.',
+            'message' => 'Successfully created user.',
             'id' => $user->id,
         ], 201);
     }
 
     /** 
-     * Devuelve los datos de un usuario específico.
+     * Returns data for a specific user.
      * 
-     * Requiere autenticación y permisos de administrador. 
+     * Requires authentication and administrator permissions.
      * 
-     * Busca el usuario por su ID. Si no se encuentra, devuelve un error 
+     * Searches for the user by ID. If not found, returns an error.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Detalles del usuario o error
+     * @return \Illuminate\Http\JsonResponse User details or error
      * 
      * @OA\Get( 
      *      path="/api/users/{id}", 
-     *      summary="Obtener un usuario por ID", 
+     *      summary="Get a user by ID", 
      *      tags={"Users"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del usuario", 
+     *          description="User ID", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Detalles del usuario", 
+     *          description="User details", 
      *          @OA\JsonContent(ref="#/components/schemas/User") 
      *      ),
      *      @OA\Response(
@@ -144,11 +141,11 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
@@ -160,34 +157,34 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['error' => 'Recurso no encontrado'], 404);
+            return response()->json(['error' => 'Resource not found'], 404);
         }
 
         return response()->json($user);
     }
 
     /** 
-     * Actualiza los datos de un usuario existente.
+     * Updates an existing user's data.
      * 
-     * Requiere autenticación y permisos de administrador.  
+     * Requires authentication and administrator permissions.
      * 
-     * Permite actualizar uno o varios campos del usuario. 
-     * Devuelve el usuario actualizado si todo es correcto. 
+     * Allows you to update one or more user fields.
+     * Returns the updated user if everything is correct. 
      * 
      * @param \Illuminate\Http\Request $request 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Usuario actualizado o error 
+     * @return \Illuminate\Http\JsonResponse User updated or error message 
      * 
      * @OA\Put( 
      *      path="/api/users/{id}", 
-     *      summary="Actualizar un usuario", 
+     *      summary="Update a user", 
      *      tags={"Users"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del usuario a actualizar", 
+     *          description="User ID to update", 
      *          @OA\Schema(type="integer") 
      *      ), @OA\RequestBody( 
      *          required=true, 
@@ -197,9 +194,9 @@ class UserController extends Controller
      *      ), 
      *      @OA\Response(
      *          response=200,
-     *          description="Usuario actualizado correctamente",
+     *          description="Successfully updated user",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Usuario actualizado correctamente"),
+     *              @OA\Property(property="message", type="string", example="Successfully updated user"),
      *              @OA\Property(property="user", ref="#/components/schemas/User")
      *          )
      *      ), 
@@ -209,18 +206,18 @@ class UserController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ), 
      *     @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
      *      ), 
      *      @OA\Response( 
      *          response=422, 
-     *          description="Errores de validación", 
+     *          description="Validation errors", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/ValidationError" 
      *          ) 
@@ -241,37 +238,37 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Usuario actualizado correctamente.',
+            'message' => 'Successfully updated user.',
             'user' => $user,
         ], 200);
     }
 
     /** 
-     * Elimina un usuario por su ID. 
+     * Deletes a user by their ID.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Si el usuario no existe, devuelve un error 404. 
-     * Si se elimina correctamente, devuelve un código 204. 
+     * If the user doesn't exist, returns a 404 error.
+     * If deleted successfully, returns a 204 code.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
+     * @return \Illuminate\Http\JsonResponse Result of the elimination
      * 
      * @OA\Delete( 
      *      path="/api/users/{id}", 
-     *      summary="Elimina un usuario", 
+     *      summary="Delete a user", 
      *      tags={"Users"},
      *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del usuario a eliminar", 
+     *          description="ID of the user to be deleted", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Usuario eliminado correctamente" 
+     *          description="Successfully deleted user" 
      *      ), 
      *      @OA\Response(
      *         response=401,
@@ -279,11 +276,11 @@ class UserController extends Controller
      *      ),
      *      @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( ref="#/components/schemas/NotFoundError" )
      *      ), 
      * ) 
@@ -293,13 +290,13 @@ class UserController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            throw new ResourceNotFoundException('Recurso no encontrado');
+            throw new ResourceNotFoundException('Resource not found');
         }
 
         $user->delete();
 
         return response()->json([
-            'message' => 'Usuario eliminado.'
+            'message' => 'Successfully deleted user'
         ], 200);
     }
 }

@@ -20,7 +20,7 @@ namespace App\Docs\Schemas;
  *              type="array", 
  *              @OA\Items( 
  *                  type="string", 
- *                  example="El nombre es obligatorio." 
+ *                  example="Name is required" 
  *              ) 
  *          ) 
  *      ) 
