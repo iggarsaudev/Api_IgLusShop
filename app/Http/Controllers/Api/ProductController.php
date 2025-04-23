@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\ProductUpdateRequest;
 
 class ProductController extends Controller
-{   /**
+{
+    /**
      * Devuelve un listado de todos los productos que no tienen descuento.
      * 
      * Este endpoint es público.
@@ -35,7 +37,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::where('has_discount',false)->get();
+        return Product::where('has_discount', false)->get();
     }
 
     /**
@@ -99,9 +101,9 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-       
-            $product = Product::create($request->all());
-            return response()->json(['id' => $product->id], 201);
+
+        $product = Product::create($request->all());
+        return response()->json(['id' => $product->id], 201);
     }
 
     /** 
@@ -144,19 +146,19 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         if (!$product) {
-        return response()->json(
-        ['message' => 'Producto no encontrado'],
-        404
-        );
+            return response()->json(
+                ['message' => 'Producto no encontrado'],
+                404
+            );
         }
         if ($product->has_discount) {
             return response()->json(
-            ['message' => 'Este producto es del outlet'],
-            404
+                ['message' => 'Este producto es del outlet'],
+                404
             );
         }
         return response()->json($product, 200);
-            }
+    }
 
     /** 
      * Actualiza los datos de un producto existente ya sea del outlet o no.
@@ -226,12 +228,12 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         if (!$product) {
-        return response()->json(
-        ['message' => 'Producto no encontrado'],
-        404
-        );
+            return response()->json(
+                ['message' => 'Producto no encontrado'],
+                404
+            );
         }
-        
+
         // Actualizamos los campos
         $product->update($request->all());
 
@@ -287,22 +289,21 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         if (!$product) {
-        return response()->json(
-        ['message' => 'Producto no encontrado'],
-        404
-        );
+            return response()->json(
+                ['message' => 'Producto no encontrado'],
+                404
+            );
         }
         if ($product->has_discount) {
             return response()->json(
-            ['message' => 'Este producto es del outlet'],
-            404
+                ['message' => 'Este producto es del outlet'],
+                404
             );
         }
         $product->delete();
         return response()->json(
-        ['message' => 'Producto eliminado correctamente'],
-        200
+            ['message' => 'Producto eliminado correctamente'],
+            200
         );
-
     }
 }

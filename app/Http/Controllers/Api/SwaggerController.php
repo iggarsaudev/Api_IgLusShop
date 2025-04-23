@@ -8,7 +8,7 @@ use OpenApi\Annotations as OA;
  * @OA\Info(
  *     version="1.0.0",
  *     title="API Documentation",
- *     description="Estructura de las funciones de la API de Iglu's Shop"
+ *     description="Structure of Iglu's Shop API functions"
  * )
  *
  * @OA\SecurityScheme(

@@ -2,20 +2,21 @@
     "openapi": "3.0.0",
     "info": {
         "title": "API Documentation",
-        "description": "Estructura de las funciones de la API de Iglu's Shop",
+        "description": "Structure of Iglu's Shop API functions",
         "version": "1.0.0"
     },
     "paths": {
         "/api/user": {
             "get": {
                 "tags": [
-                    "Autenticación"
+                    "Authentication"
                 ],
-                "summary": "Obtener usuario autenticado",
+                "summary": "Get the authenticated user",
+                "description": "Gets the authenticated user",
                 "operationId": "36387f01cad8ad0c46daaf87bc518ce8",
                 "responses": {
                     "200": {
-                        "description": "Usuario autenticado",
+                        "description": "Authenticated user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -25,7 +26,7 @@
                         }
                     },
                     "401": {
-                        "description": "No autenticado"
+                        "description": "Not authenticated"
                     }
                 },
                 "security": [
@@ -38,9 +39,10 @@
         "/api/register": {
             "post": {
                 "tags": [
-                    "Autenticación"
+                    "Authentication"
                 ],
-                "summary": "Registrar un nuevo usuario",
+                "summary": "Register a new user",
+                "description": "Register a new user",
                 "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
                 "requestBody": {
                     "required": true,
@@ -75,14 +77,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Usuario registrado correctamente",
+                        "description": "Successfully registered user",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Usuario registrado correctamente"
+                                            "example": "Successfully registered user"
                                         }
                                     },
                                     "type": "object"
@@ -91,10 +93,17 @@
                         }
                     },
                     "409": {
-                        "description": "El email ya está registrado"
+                        "description": "The email is already registered"
                     },
                     "422": {
-                        "description": "Error de validación"
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -102,9 +111,10 @@
         "/api/login": {
             "post": {
                 "tags": [
-                    "Autenticación"
+                    "Authentication"
                 ],
-                "summary": "Iniciar sesión",
+                "summary": "Login a user",
+                "description": "Login",
                 "operationId": "222b2625838e3c57e017987f73598fda",
                 "requestBody": {
                     "required": true,
@@ -134,14 +144,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Inicio de sesión correcto",
+                        "description": "Successful login",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Inicio de sesión correcto"
+                                            "example": "Successful login"
                                         },
                                         "token": {
                                             "type": "string",
@@ -154,7 +164,7 @@
                         }
                     },
                     "401": {
-                        "description": "Credenciales inválidas"
+                        "description": "Invalid credentials"
                     }
                 }
             }
@@ -162,20 +172,21 @@
         "/api/logout": {
             "post": {
                 "tags": [
-                    "Autenticación"
+                    "Authentication"
                 ],
-                "summary": "Cerrar sesión",
+                "summary": "Logout the authenticated user",
+                "description": "Logout",
                 "operationId": "ad65cbbd4e9f201619eae184a5961a98",
                 "responses": {
                     "200": {
-                        "description": "Sesión cerrada correctamente",
+                        "description": "Successfully logged out",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Sesión cerrada correctamente"
+                                            "example": "Successfully logged out"
                                         }
                                     },
                                     "type": "object"
@@ -194,23 +205,23 @@
                 ]
             }
         },
-        "/api/providers": {
+        "/api/orders": {
             "get": {
                 "tags": [
-                    "Providers"
+                    "Orders"
                 ],
-                "summary": "Obtener todos los proveedores",
-                "description": "Devuelve un listado de todos los proveedores registrados en \nla base de datos.\n\nRequiere autenticación y permisos de administrador.\n\nEsta función obtiene todos los registros del modelo Provider y \nlos devuelve en formato JSON. Cada proveedor incluye \nname y description.",
-                "operationId": "d99e139f235d5222c74789c37512fc95",
+                "summary": "Order List",
+                "description": "Returns a list of all orders registered in the database.\n\nRequires authentication.\n\nIf you are the admin role, it will display all orders. If you are a user, it will only display your own orders.\n\nThis function retrieves all records from the Order model and returns them in JSON format. Each order includes the user_id, date, status, and total.",
+                "operationId": "955bb77a45ae173a485fadb8befed93f",
                 "responses": {
                     "200": {
-                        "description": "Lista de proveedores",
+                        "description": "Order List",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Provider"
+                                        "$ref": "#/components/schemas/Order"
                                     }
                                 }
                             }
@@ -218,9 +229,6 @@
                     },
                     "401": {
                         "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "No autorizado"
                     }
                 },
                 "security": [
@@ -231,35 +239,278 @@
             },
             "post": {
                 "tags": [
-                    "Providers"
+                    "Orders"
                 ],
-                "summary": "Crear un nuevo proveedor",
-                "description": "Crea un nuevo proveedor con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nValida los campos requeridos antes de almacenar el recurso. \nEl campo \"description\" es opcional. \nDevuelve el ID del proveedor creado y mensaje de confirmación si la operación es exitosa.",
-                "operationId": "8d61f862240fcb54ca4379f8211c756f",
+                "summary": "Create new order",
+                "description": "Creates a new order with the provided data.\n\nRequires authentication.\n\nValidates required fields before storing the resource.\nReturns the created user ID and a confirmation message if the operation is successful.",
+                "operationId": "2123ba58dadb22bd6f2c8081af562230",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ProviderCreateSchema"
+                                "$ref": "#/components/schemas/CreateOrderRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Proveedor creado correctamente",
+                        "description": "Order created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Show order",
+                "description": "Returns data for a specific order.\n\nRequires authentication.\n\nIf you are the admin role, you will be able to access all orders; if you are a user, you will only access your own orders.\n\nSearches for the order by its ID. If it is not found, an error is returned.",
+                "operationId": "88d27387b1e409e075c18609d4a0c300",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Cancel order",
+                "description": "Cancel an order by its ID.\n\nRequires authentication.\n\nIf you are the admin role, you can cancel any order. If you are a user, you will only cancel your own orders.\n\nIf the order doesn't exist, a 404 error is returned.\nIf the order is canceled successfully, a 204 code is returned.",
+                "operationId": "bab875a1ed962fb33565ab9b48c0d494",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order successfully cancelled"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{id}/status": {
+            "patch": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update order status",
+                "description": "Updates the data of an existing order.\n\nRequires authentication.\n\nIf you are an admin role, you can update all orders; if you are a user, you will only update your orders.\n\nAllows you to update the order status.\nReturns the updated order if everything is correct.",
+                "operationId": "6171b061f04a36658d9bca106ece32b5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateOrderStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/outlet": {
+            "get": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Obtener todos los productos sin descuento",
+                "description": "Devuelve un listado de todos los productos que tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
+                "operationId": "955d73daad4a3e784296234cb13fc5d8",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Crear un nuevo producto del outlet",
+                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre verdarep para los productos del outlet.\n   Si se quiere generar un producto sin descuento se debe hacer desde el endpoint correspondiente de products.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es verdadero, este valor debe ser mayor de 0 y menor de 100.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
+                "operationId": "d11b65ac7954125f05487fe45862fcff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OutletCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado correctamente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Proveedor creado correctamente."
+                                            "example": "Producto creado correctamente."
                                         },
                                         "id": {
                                             "type": "integer",
-                                            "example": 1
+                                            "example": 21
                                         }
                                     },
                                     "type": "object"
@@ -291,19 +542,19 @@
                 ]
             }
         },
-        "/api/providers/{id}": {
+        "/api/outlet/{id}": {
             "get": {
                 "tags": [
-                    "Providers"
+                    "Outlet"
                 ],
-                "summary": "Obtener un proveedor por ID",
-                "description": "Devuelve los datos de un proveedor específico.\n\nRequiere autenticación y permisos de administrador. \n\nBusca el proveedor por su ID. Si no se encuentra, devuelve un error",
-                "operationId": "2e8a9bc6272603d6fc877d77d9472c78",
+                "summary": "Obtener un producto del outlet por ID",
+                "description": "Devuelve los datos de un producto del outlet específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que pertenezca al outlet.\nSi no se encuentra, devuelve un error",
+                "operationId": "7029b3370902ee0537345e1fa4f65ce5",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del proveedor",
+                        "description": "ID del producto",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -312,14 +563,48 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalles del proveedor",
+                        "description": "Detalles del producto",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Provider"
+                                    "$ref": "#/components/schemas/Product"
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado o perteneciente al outlet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Outlet"
+                ],
+                "summary": "Elimina un producto del outlet",
+                "description": "Elimina un producto que pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "operationId": "97899162908852e82c2655aedb3de42b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado correctamente"
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -328,7 +613,7 @@
                         "description": "No autorizado"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Producto no encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -343,19 +628,150 @@
                         "bearerAuth": []
                     }
                 ]
-            },
-            "put": {
+            }
+        },
+        "api/products": {
+            "get": {
                 "tags": [
-                    "Providers"
+                    "Products"
                 ],
-                "summary": "Actualizar un proveedor",
-                "description": "Actualiza los datos de un proveedor existente.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del proveedor. \nDevuelve el proveedor actualizado si todo es correcto.",
-                "operationId": "9f26750a48584c4e9d4a861e4d024d1c",
+                "summary": "Obtener todos los productos sin descuento",
+                "description": "Devuelve un listado de todos los productos que no tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que no tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
+                "operationId": "a68f225209c8749043e8020d23e2426a",
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Crear un nuevo producto",
+                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre falso para los productos estándar. Si se quiere generar un producto \n   con descuento se debe hacer desde el endpoint correspondiente de outlet.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es falso, este valor debe ser 0.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
+                "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Producto creado correctamente."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 21
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Errores de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Obtener un producto por ID",
+                "description": "Devuelve los datos de un producto específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que no pertenezca al outlet.\nSi no se encuentra, devuelve un error",
+                "operationId": "c87fb2e4d617e7b36c712cad358acdb8",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del proveedor a actualizar",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del producto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado o perteneciente al outlet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Actualizar un producto",
+                "description": "Actualiza los datos de un producto existente ya sea del outlet o no.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del producto. \nDevuelve el producto actualizado si todo es correcto. \n\nPermite actualizar el campo has_discount a un valor truthy para pasar el producto al \nendpoint de outlet",
+                "operationId": "416e4959a3919547eb609d87e3db9135",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del producto a actualizar",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -367,24 +783,24 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ProviderUpdateSchema"
+                                "$ref": "#/components/schemas/ProductUpdate"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Proveedor actualizado correctamente",
+                        "description": "Producto actualizado correctamente",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Proveedor actualizado correctamente"
+                                            "example": "Producto actualizado correctamente"
                                         },
-                                        "provider": {
-                                            "$ref": "#/components/schemas/Provider"
+                                        "product": {
+                                            "$ref": "#/components/schemas/ProductUpdate"
                                         }
                                     },
                                     "type": "object"
@@ -399,7 +815,7 @@
                         "description": "No autorizado"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Producto no encontrado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -427,16 +843,16 @@
             },
             "delete": {
                 "tags": [
-                    "Providers"
+                    "Products"
                 ],
-                "summary": "Elimina un proveedor",
-                "description": "Elimina un proveedor por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el proveedor no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
-                "operationId": "1aa03e6dae527bbdd64b73a803e0a142",
+                "summary": "Elimina un producto",
+                "description": "Elimina un producto que no pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "operationId": "b49ce9f3cb168b233245548fb4ef36d3",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del proveedor a eliminar",
+                        "description": "ID del producto a eliminar",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -445,7 +861,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Proveedor eliminado correctamente"
+                        "description": "Producto eliminado correctamente"
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -454,7 +870,284 @@
                         "description": "No autorizado"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Producto no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/providers": {
+            "get": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Get all providers",
+                "description": "Returns a list of all providers registered in the database.\n\nRequires authentication and administrator permissions.\n\nThis function retrieves all records from the Provider model and returns them in JSON format. Each provider includes a name and description.",
+                "operationId": "d99e139f235d5222c74789c37512fc95",
+                "responses": {
+                    "200": {
+                        "description": "Providers list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Provider"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Create a new provider",
+                "description": "Creates a new provider with the provided data.\n\nRequires authentication and administrator permissions.\n\nValidates required fields before storing the resource.\nThe \"description\" field is optional.\nReturns the ID of the created provider and a confirmation message if the operation is successful.",
+                "operationId": "8d61f862240fcb54ca4379f8211c756f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProviderCreateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Provider created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Provider created successfully"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/providers/{id}": {
+            "get": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Get a provider by ID",
+                "description": "Returns data for a specific provider.\n\nRequires authentication and administrator permissions.\n\nSearches for the provider by its ID. If not found, returns an error.",
+                "operationId": "2e8a9bc6272603d6fc877d77d9472c78",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Provider ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Provider details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Provider"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Update a provider",
+                "description": "Updates an existing provider's data.\n\nRequires authentication and administrator permissions.\n\nAllows you to update one or more provider fields.\nReturns the updated provider if everything is correct.",
+                "operationId": "9f26750a48584c4e9d4a861e4d024d1c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Provider ID to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProviderUpdateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Provider updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Provider updated successfully"
+                                        },
+                                        "provider": {
+                                            "$ref": "#/components/schemas/Provider"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundError"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Providers"
+                ],
+                "summary": "Delete a provider",
+                "description": "Deletes a provider by its ID.\n\nRequires authentication and administrator permissions.\n\nIf the provider does not exist, a 404 error is returned.\nIf deleted successfully, a 204 code is returned.",
+                "operationId": "1aa03e6dae527bbdd64b73a803e0a142",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the provider to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Provide successfully removed"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -743,12 +1436,12 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Obtener todos los usuarios",
-                "description": "Devuelve un listado de todos los usuarios registrados en \nla base de datos.\n\nRequiere autenticación y permisos de administrador.\n\nEsta función obtiene todos los registros del modelo User y \nlos devuelve en formato JSON. Cada usuario incluye \nname, email, password y role.",
+                "summary": "Get all users",
+                "description": "Returns a list of all users registered in the database.\n\nRequires authentication and administrator permissions.\n\nThis function retrieves all records from the User model and returns them in JSON format. Each user includes a name, email, password, and role.",
                 "operationId": "566aed8efb436ca506e0ef51a032ecd9",
                 "responses": {
                     "200": {
-                        "description": "Lista de usuarios",
+                        "description": "User List",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -764,7 +1457,7 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     }
                 },
                 "security": [
@@ -777,8 +1470,8 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Crear un nuevo usuario",
-                "description": "Crea un nuevo usuario con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nValida los campos requeridos antes de almacenar el recurso. \nEl campo \"role\" es opcional, en el caso de no indicarlo será \"user\". \nDevuelve el ID del usuario creado y mensaje de confirmación si la operación es exitosa.",
+                "summary": "Create a new user",
+                "description": "Creates a new user with the provided data.\n\nRequires authentication and administrator permissions.\n\nValidates required fields before storing the resource.\nThe \"role\" field is optional; if not specified, it will be \"user\".\nReturns the created user ID and a confirmation message if the operation is successful.",
                 "operationId": "be551c1d694a01c164966f58bfa77013",
                 "requestBody": {
                     "required": true,
@@ -792,14 +1485,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Usuario creado correctamente",
+                        "description": "Successfully created user",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Usuario creado correctamente."
+                                            "example": "Successfully created user."
                                         },
                                         "id": {
                                             "type": "integer",
@@ -815,10 +1508,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -840,14 +1533,14 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Obtener un usuario por ID",
-                "description": "Devuelve los datos de un usuario específico.\n\nRequiere autenticación y permisos de administrador. \n\nBusca el usuario por su ID. Si no se encuentra, devuelve un error",
+                "summary": "Get a user by ID",
+                "description": "Returns data for a specific user.\n\nRequires authentication and administrator permissions.\n\nSearches for the user by ID. If not found, returns an error.",
                 "operationId": "6f51bd5fa2dddcd25e44cfa53dcbd10a",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del usuario",
+                        "description": "User ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -856,7 +1549,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalles del usuario",
+                        "description": "User details",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -869,10 +1562,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -892,14 +1585,14 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Actualizar un usuario",
-                "description": "Actualiza los datos de un usuario existente.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del usuario. \nDevuelve el usuario actualizado si todo es correcto.",
+                "summary": "Update a user",
+                "description": "Updates an existing user's data.\n\nRequires authentication and administrator permissions.\n\nAllows you to update one or more user fields.\nReturns the updated user if everything is correct.",
                 "operationId": "070e37fc9aff78ae73860751bc990ed3",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del usuario a actualizar",
+                        "description": "User ID to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -918,14 +1611,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Usuario actualizado correctamente",
+                        "description": "Successfully updated user",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Usuario actualizado correctamente"
+                                            "example": "Successfully updated user"
                                         },
                                         "user": {
                                             "$ref": "#/components/schemas/User"
@@ -940,10 +1633,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -953,7 +1646,7 @@
                         }
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -973,14 +1666,14 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Elimina un usuario",
-                "description": "Elimina un usuario por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el usuario no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "summary": "Delete a user",
+                "description": "Deletes a user by their ID.\n\nRequires authentication and administrator permissions.\n\nIf the user doesn't exist, returns a 404 error.\nIf deleted successfully, returns a 204 code.",
                 "operationId": "0b4133ed462528a5e648b88ead11e929",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del usuario a eliminar",
+                        "description": "ID of the user to be deleted",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -989,447 +1682,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Usuario eliminado correctamente"
+                        "description": "Successfully deleted user"
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NotFoundError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/outlet": {
-            "get": {
-                "tags": [
-                    "Outlet"
-                ],
-                "summary": "Obtener todos los productos sin descuento",
-                "description": "Devuelve un listado de todos los productos que tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
-                "operationId": "6b3f392eeac2168c52aef76b0b640fce",
-                "responses": {
-                    "200": {
-                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Product"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Outlet"
-                ],
-                "summary": "Crear un nuevo producto del outlet",
-                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre verdarep para los productos del outlet.\n   Si se quiere generar un producto sin descuento se debe hacer desde el endpoint correspondiente de products.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es verdadero, este valor debe ser mayor de 0 y menor de 100.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
-                "operationId": "3c74ec1c554a925bb5fd4a6a896f3c64",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/OutletCreate"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Producto creado correctamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto creado correctamente."
-                                        },
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 21
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "No autorizado"
-                    },
-                    "422": {
-                        "description": "Errores de validación",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/outlet/{id}": {
-            "get": {
-                "tags": [
-                    "Outlet"
-                ],
-                "summary": "Obtener un producto del outlet por ID",
-                "description": "Devuelve los datos de un producto del outlet específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que pertenezca al outlet.\nSi no se encuentra, devuelve un error",
-                "operationId": "40bdf209c2150f57aad9caf0cb26de27",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Detalles del producto",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Product"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Producto no encontrado o perteneciente al outlet",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NotFoundError"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Outlet"
-                ],
-                "summary": "Elimina un producto del outlet",
-                "description": "Elimina un producto que pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
-                "operationId": "8b2db8f3e207d3a08e9a77dc574c24a3",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Producto eliminado correctamente"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "No autorizado"
-                    },
-                    "404": {
-                        "description": "Producto no encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NotFoundError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "api/products": {
-            "get": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Obtener todos los productos sin descuento",
-                "description": "Devuelve un listado de todos los productos que no tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que no tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
-                "operationId": "c3cf40a10607096df7f066e25f305da3",
-                "responses": {
-                    "200": {
-                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Product"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/products": {
-            "post": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Crear un nuevo producto",
-                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre falso para los productos estándar. Si se quiere generar un producto \n   con descuento se debe hacer desde el endpoint correspondiente de outlet.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es falso, este valor debe ser 0.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
-                "operationId": "e8185e307706e2cd84bbcf5171e2f09d",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ProductCreate"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Producto creado correctamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto creado correctamente."
-                                        },
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 21
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "No autorizado"
-                    },
-                    "422": {
-                        "description": "Errores de validación",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/products/{id}": {
-            "get": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Obtener un producto por ID",
-                "description": "Devuelve los datos de un producto específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que no pertenezca al outlet.\nSi no se encuentra, devuelve un error",
-                "operationId": "7ab21ddb713501f3d4c2914892c02a21",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Detalles del producto",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Product"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Producto no encontrado o perteneciente al outlet",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NotFoundError"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Actualizar un producto",
-                "description": "Actualiza los datos de un producto existente ya sea del outlet o no.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del producto. \nDevuelve el producto actualizado si todo es correcto. \n\nPermite actualizar el campo has_discount a un valor truthy para pasar el producto al \nendpoint de outlet",
-                "operationId": "6a7e11900844cd85cff66e662b82bd4c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto a actualizar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ProductUpdate"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Producto actualizado correctamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Producto actualizado correctamente"
-                                        },
-                                        "product": {
-                                            "$ref": "#/components/schemas/ProductUpdate"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "No autorizado"
-                    },
-                    "404": {
-                        "description": "Producto no encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/NotFoundError"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Errores de validación",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ValidationError"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Products"
-                ],
-                "summary": "Elimina un producto",
-                "description": "Elimina un producto que no pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
-                "operationId": "e80a6ca46716acee6b47ea1ac91663c0",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del producto a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Producto eliminado correctamente"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "No autorizado"
-                    },
-                    "404": {
-                        "description": "Producto no encontrado",
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1449,12 +1711,139 @@
     },
     "components": {
         "schemas": {
+            "CreateOrderRequest": {
+                "title": "Create Order Request",
+                "required": [
+                    "items"
+                ],
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "product_id",
+                                "quantity"
+                            ],
+                            "properties": {
+                                "product_id": {
+                                    "type": "integer",
+                                    "example": 2
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "example": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "NotFoundError": {
-                "title": "Recurso no encontrado",
+                "title": "Resource not found",
                 "properties": {
                     "message": {
                         "type": "string",
-                        "example": "Recurso no encontrado"
+                        "example": "Resource not found"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderDetails": {
+                "title": "OrderDetails",
+                "required": [
+                    "order_id",
+                    "product_id",
+                    "quantity",
+                    "unit_price"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "order_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "unit_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 49.99
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-21T10:30:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-21T10:30:00"
+                    }
+                },
+                "type": "object"
+            },
+            "Order": {
+                "title": "Order",
+                "required": [
+                    "user_id",
+                    "status",
+                    "total"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-21T10:30:00"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "sent",
+                            "cancelled",
+                            "delivered"
+                        ],
+                        "example": "pending"
+                    },
+                    "total": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 199.99
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-21T10:30:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-04-21T10:30:00"
+                    },
+                    "detalles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderDetails"
+                        }
                     }
                 },
                 "type": "object"
@@ -1851,6 +2240,25 @@
                 },
                 "type": "object"
             },
+            "UpdateOrderStatusRequest": {
+                "title": "Update Order Status Request",
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "sent",
+                            "cancelled",
+                            "delivered"
+                        ],
+                        "example": "sent"
+                    }
+                },
+                "type": "object"
+            },
             "UserCreateSchema": {
                 "required": [
                     "name",
@@ -1969,7 +2377,7 @@
                                 "type": "array",
                                 "items": {
                                     "type": "string",
-                                    "example": "El nombre es obligatorio."
+                                    "example": "Name is required"
                                 }
                             }
                         },
@@ -1989,8 +2397,20 @@
     },
     "tags": [
         {
-            "name": "Autenticación",
-            "description": "Autenticación"
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Orders",
+            "description": "Orders"
+        },
+        {
+            "name": "Outlet",
+            "description": "Outlet"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
         },
         {
             "name": "Providers",
@@ -2003,14 +2423,6 @@
         {
             "name": "Users",
             "description": "Users"
-        },
-        {
-            "name": "Outlet",
-            "description": "Outlet"
-        },
-        {
-            "name": "Products",
-            "description": "Products"
         }
     ]
 }

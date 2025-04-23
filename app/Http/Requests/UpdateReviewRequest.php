@@ -27,4 +27,17 @@ class UpdateReviewRequest extends FormRequest
             'rating' => 'sometimes|integer|min:0|max:5',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'product_id.integer' => 'The product ID must be an integer.',
+            'product_id.exists' => 'The selected product does not exist.',
+            'comment.string' => 'The comment must be a string.',
+            'comment.max' => 'The comment may not be greater than 255 characters.',
+            'rating.integer' => 'The rating must be an integer.',
+            'rating.min' => 'The rating must be at least 0.',
+            'rating.max' => 'The rating may not be greater than 5.',
+        ];
+    }
 }

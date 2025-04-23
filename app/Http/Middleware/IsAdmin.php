@@ -18,7 +18,7 @@ class IsAdmin
     {
         // Verifica si el usuario está autenticado
         if (!Auth::check()) {
-            return response()->json(['message' => 'No autenticado'], 401);
+            return response()->json(['message' => 'Not authenticated'], 401);
         }
 
         // Verifica si es admin (el token se creó con nombre 'admin-token')
@@ -27,6 +27,6 @@ class IsAdmin
         }
 
         // Si no es admin
-        return response()->json(['message' => 'No autorizado'], 403);
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 }

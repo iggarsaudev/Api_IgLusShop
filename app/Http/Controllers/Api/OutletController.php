@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Product;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\OutletRequest;
 
 class OutletController extends Controller
 {
- /**
+    /**
      * Devuelve un listado de todos los productos que tienen descuento.
      * 
      * Este endpoint es público.
@@ -35,10 +36,10 @@ class OutletController extends Controller
      */
     public function index()
     {
-        return Product::where('has_discount',true)->get();
+        return Product::where('has_discount', true)->get();
     }
 
-  /**
+    /**
      * Crea un nuevo producto con los datos proporcionados. 
      * 
      * Requiere autenticación y permisos de administrador.
@@ -99,11 +100,12 @@ class OutletController extends Controller
      */
     public function store(OutletRequest $request)
     {
-       
-            $product = Product::create($request->all());
-            return response()->json([
-                 'message'=> "Producto creado correctamente.",
-                 'id' => $product->id], 201);
+
+        $product = Product::create($request->all());
+        return response()->json([
+            'message' => "Producto creado correctamente.",
+            'id' => $product->id
+        ], 201);
     }
     /** 
      * Devuelve los datos de un producto del outlet específico.
@@ -145,22 +147,21 @@ class OutletController extends Controller
     {
         $product = Product::find($id);
         if (!$product) {
-        return response()->json(
-        ['message' => 'Producto no encontrado'],
-        404
-        );
+            return response()->json(
+                ['message' => 'Producto no encontrado'],
+                404
+            );
         }
         if (!($product->has_discount)) {
             return response()->json(
-            ['message' => 'Este producto no es del outlet'],
-            404
+                ['message' => 'Este producto no es del outlet'],
+                404
             );
         }
         return response()->json($product, 200);
-            
     }
 
-   /** 
+    /** 
      * Elimina un producto que pertenezca al outlet por su ID. 
      * 
      * Requiere autenticación y permisos de administrador.
@@ -206,23 +207,22 @@ class OutletController extends Controller
     {
         $product = Product::find($id);
         if (!$product) {
-        return response()->json(
-        ['message' => 'Producto no encontrado'],
-        404
-        );
+            return response()->json(
+                ['message' => 'Producto no encontrado'],
+                404
+            );
         }
         if (!($product->has_discount)) {
             // Este endpoint solo debe eliminar productos del oultet
             return response()->json(
-            ['message' => 'Este producto no es del outlet'],
-            404
+                ['message' => 'Este producto no es del outlet'],
+                404
             );
         }
         $product->delete();
         return response()->json(
-        ['message' => 'Producto eliminado correctamente'],
-        200
+            ['message' => 'Producto eliminado correctamente'],
+            200
         );
-
     }
 }

@@ -37,10 +37,10 @@ class UpdateProviderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre es obligatorio',
-            'name.string' => 'El nombre debe ser una cadena de caracteres',
-            'name.max' => 'Máximo 255 caracteres',
-            'description.string' => 'La descripción debe ser una cadena de caracteres'
+            'name.required' => 'The name is required',
+            'name.string' => 'The name must be a string',
+            'name.max' => 'Maximum 255 characters',
+            'description.string' => 'The description must be a string'
         ];
     }
 }

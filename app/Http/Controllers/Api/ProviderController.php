@@ -11,25 +11,22 @@ use App\Models\Provider;
 class ProviderController extends Controller
 {
     /**
-     * Devuelve un listado de todos los proveedores registrados en 
-     * la base de datos.
+     * Returns a list of all providers registered in the database.
+     *
+     * Requires authentication and administrator permissions.
+     *
+     * This function retrieves all records from the Provider model and returns them in JSON format. Each provider includes a name and description.
      * 
-     * Requiere autenticación y permisos de administrador.
-     * 
-     * Esta función obtiene todos los registros del modelo Provider y 
-     * los devuelve en formato JSON. Cada proveedor incluye 
-     * name y description.
-     * 
-     * @return \Illuminate\Http\JsonResponse Listado de proveedores 
+     * @return \Illuminate\Http\JsonResponse Providers List 
      * 
      * @OA\Get( 
      *     path="/api/providers", 
-     *     summary="Obtener todos los proveedores", 
+     *     summary="Get all providers", 
      *     tags={"Providers"}, 
      *     security={{"bearerAuth": {}}},
      *     @OA\Response( 
      *         response=200, 
-     *         description="Lista de proveedores", 
+     *         description="Providers list", 
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/Provider")
@@ -41,7 +38,7 @@ class ProviderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ) 
      * )
      */
@@ -51,20 +48,20 @@ class ProviderController extends Controller
     }
 
     /**
-     * Crea un nuevo proveedor con los datos proporcionados. 
+     * Creates a new provider with the provided data.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Valida los campos requeridos antes de almacenar el recurso. 
-     * El campo "description" es opcional. 
-     * Devuelve el ID del proveedor creado y mensaje de confirmación si la operación es exitosa.
+     * Validates required fields before storing the resource.
+     * The "description" field is optional.
+     * Returns the ID of the created provider and a confirmation message if the operation is successful.
      * 
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse ID del proveedor creado y mensaje de confirmación
+     * @return \Illuminate\Http\JsonResponse Provider ID created and confirmation message
      *
      * @OA\Post(
      *     path="/api/providers",
-     *     summary="Crear un nuevo proveedor",
+     *     summary="Create a new provider",
      *     tags={"Providers"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
@@ -73,9 +70,9 @@ class ProviderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Proveedor creado correctamente",
+     *         description="Provider created successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Proveedor creado correctamente."),
+     *             @OA\Property(property="message", type="string", example="Provider created successfully"),
      *             @OA\Property(property="id", type="integer", example=1)
      *         )
      *     ),
@@ -85,11 +82,11 @@ class ProviderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Errores de validación",
+     *         description="Validation errors",
      *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
      *     )
      * )
@@ -102,36 +99,36 @@ class ProviderController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Proveedor creado correctamente.',
+            'message' => 'Provider created successfully',
             'id' => $provider->id,
         ], 201);
     }
 
     /** 
-     * Devuelve los datos de un proveedor específico.
+     * Returns data for a specific provider.
      * 
-     * Requiere autenticación y permisos de administrador. 
+     * Requires authentication and administrator permissions.
      * 
-     * Busca el proveedor por su ID. Si no se encuentra, devuelve un error 
+     * Searches for the provider by its ID. If not found, returns an error.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Detalles del proveedor o error
+     * @return \Illuminate\Http\JsonResponse Provider details or error
      * 
      * @OA\Get( 
      *      path="/api/providers/{id}", 
-     *      summary="Obtener un proveedor por ID", 
+     *      summary="Get a provider by ID", 
      *      tags={"Providers"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del proveedor", 
+     *          description="Provider ID", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Detalles del proveedor", 
+     *          description="Provider details", 
      *          @OA\JsonContent(ref="#/components/schemas/Provider") 
      *      ),
      *      @OA\Response(
@@ -140,11 +137,11 @@ class ProviderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
@@ -156,34 +153,34 @@ class ProviderController extends Controller
         $provider = Provider::find($id);
 
         if (!$provider) {
-            return response()->json(['error' => 'Recurso no encontrado'], 404);
+            return response()->json(['error' => 'Resource not found'], 404);
         }
 
         return response()->json($provider);
     }
 
     /** 
-     * Actualiza los datos de un proveedor existente.
+     * Updates an existing provider's data.
      * 
-     * Requiere autenticación y permisos de administrador.  
+     * Requires authentication and administrator permissions.
      * 
-     * Permite actualizar uno o varios campos del proveedor. 
-     * Devuelve el proveedor actualizado si todo es correcto. 
+     * Allows you to update one or more provider fields.
+     * Returns the updated provider if everything is correct. 
      * 
      * @param \Illuminate\Http\Request $request 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Proveedor actualizado o error 
+     * @return \Illuminate\Http\JsonResponse Updated provider or error message 
      * 
      * @OA\Put( 
      *      path="/api/providers/{id}", 
-     *      summary="Actualizar un proveedor", 
+     *      summary="Update a provider", 
      *      tags={"Providers"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del proveedor a actualizar", 
+     *          description="Provider ID to update", 
      *          @OA\Schema(type="integer") 
      *      ), @OA\RequestBody( 
      *          required=true, 
@@ -193,9 +190,9 @@ class ProviderController extends Controller
      *      ), 
      *      @OA\Response(
      *          response=200,
-     *          description="Proveedor actualizado correctamente",
+     *          description="Provider updated successfully",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Proveedor actualizado correctamente"),
+     *              @OA\Property(property="message", type="string", example="Provider updated successfully"),
      *              @OA\Property(property="provider", ref="#/components/schemas/Provider")
      *          )
      *      ), 
@@ -205,18 +202,18 @@ class ProviderController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ), 
      *     @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
      *      ), 
      *      @OA\Response( 
      *          response=422, 
-     *          description="Errores de validación", 
+     *          description="Validation errors", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/ValidationError" 
      *          ) 
@@ -233,37 +230,37 @@ class ProviderController extends Controller
         $provider->save();
 
         return response()->json([
-            'message' => 'Proveedor actualizado correctamente.',
+            'message' => 'Provider updated successfully.',
             'provider' => $provider,
         ], 200);
     }
 
     /** 
-     * Elimina un proveedor por su ID. 
+     * Deletes a provider by its ID.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Si el proveedor no existe, devuelve un error 404. 
-     * Si se elimina correctamente, devuelve un código 204. 
+     * If the provider does not exist, a 404 error is returned.
+     * If deleted successfully, a 204 code is returned.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
+     * @return \Illuminate\Http\JsonResponse Result of the elimination 
      * 
      * @OA\Delete( 
      *      path="/api/providers/{id}", 
-     *      summary="Elimina un proveedor", 
+     *      summary="Delete a provider", 
      *      tags={"Providers"},
      *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del proveedor a eliminar", 
+     *          description="ID of the provider to be deleted", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Proveedor eliminado correctamente" 
+     *          description="Provide successfully removed" 
      *      ), 
      *      @OA\Response(
      *         response=401,
@@ -271,11 +268,11 @@ class ProviderController extends Controller
      *      ),
      *      @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( ref="#/components/schemas/NotFoundError" )
      *      ), 
      * ) 
@@ -285,13 +282,13 @@ class ProviderController extends Controller
         $provider = Provider::find($id);
 
         if (!$provider) {
-            throw new ResourceNotFoundException('Recurso no encontrado');
+            throw new ResourceNotFoundException('Resource not found');
         }
 
         $provider->delete();
 
         return response()->json([
-            'message' => 'Proveedor eliminado.'
+            'message' => 'Provider removed'
         ], 200);
     }
 }

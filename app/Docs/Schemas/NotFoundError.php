@@ -6,11 +6,11 @@ namespace App\Docs\Schemas;
  * @OA\Schema( 
  *      schema="NotFoundError", 
  *      type="object", 
- *      title="Recurso no encontrado", 
+ *      title="Resource not found", 
  *      @OA\Property( 
  *          property="message", 
  *          type="string", 
- *          example="Recurso no encontrado" 
+ *          example="Resource not found" 
  *      ) 
  * ) 
  */
