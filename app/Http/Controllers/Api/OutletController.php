@@ -10,23 +10,24 @@ use App\Http\Requests\OutletRequest;
 class OutletController extends Controller
 {
     /**
-     * Devuelve un listado de todos los productos que tienen descuento.
+     * Returns a list of all the products with discount.
      * 
-     * Este endpoint es público.
+     * This is a public endpoint .
      * 
-     * Esta función obtiene todos  los productos que tienen descuento del 
-     * modelo Product y los devuelve en formato JSON. Cada producto incluye 
+     * This function retrieves all products with a discount from the
+     * Product model and returns them in JSON format. Each product includes
+     * id, name, description, price, stock, image, has_discount, discount, provider_id, category_id, created_at, and updated_at.
      * id, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.
      * 
-     * @return \Illuminate\Http\JsonResponse Listado de productos sin descuento 
+     * @return \Illuminate\Http\JsonResponse List of products with discount
      * 
      * @OA\Get( 
      *     path="/api/outlet", 
-     *     summary="Obtener todos los productos sin descuento", 
+     *     summary="Get all products with a discount", 
      *     tags={"Outlet"}, 
      *     @OA\Response( 
      *         response=200, 
-     *         description="Lista de productos sin descuento (endpoint público, no requiere autenticación)", 
+     *         description="List of products with discount (public endpoint, does not require authentication).", 
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/Product")
@@ -40,35 +41,36 @@ class OutletController extends Controller
     }
 
     /**
-     * Crea un nuevo producto con los datos proporcionados. 
-     * 
-     * Requiere autenticación y permisos de administrador.
-     * 
-     * Al crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:
-     * 
-     * - `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.
-     * - `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.
-     * - `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.
-     * - `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.
-     * - `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.
-     * 
-     * Los siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:
-     * 
-     * - `stock`: Número entero que indica la cantidad disponible del producto en stock.
-     * - `image`: URL válida que apunta a la imagen del producto.
-     * - `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre verdarep para los productos del outlet.
-     *    Si se quiere generar un producto sin descuento se debe hacer desde el endpoint correspondiente de products.
-     * - `discount`: El descuento aplicado al producto. Si `has_discount` es verdadero, este valor debe ser mayor de 0 y menor de 100.
-     * 
-     * La validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.
+     * Creates a new product from outlet.
+     *
+     * Requires authentication and administrator permissions.
+     *
+     * When creating a new product, the following fields are required:
+     *
+     * - `name`: The name of the product. Must be a string with a minimum of 3 characters.
+     * - `description`: A detailed description of the product. Must be a string with a maximum of 255 characters.
+     * - `price`: The price of the product. Must be a decimal number with up to two decimal places.
+     * - `category_id`: ID of the category the product belongs to. Must be an integer and must exist in the database.
+     * - `provider_id`: ID of the provider associated with the product. Must be an integer and must exist in the database.
+     *
+     * The following fields are optional, but if included, must meet the specified validations:
+     *
+     * - `stock`: An integer indicating the available quantity of the product in stock.
+     * - `image`: A valid URL pointing to the product's image.
+     * - `has_discount`: A boolean field indicating whether the product has a discount. This field must always be true for outlet products.
+     *    To create a product without a discount, use the appropriate products endpoint.
+     * - `discount`: The discount applied to the product. If `has_discount` is true, this value must be greater than 0 and less than 100.
+     *
+     * Validation includes type constraints and specific value rules. If any field does not comply with the rules, an error will be returned.
+     *
      *
      * 
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse ID del producto creado y mensaje de confirmación
+     * @return \Illuminate\Http\JsonResponse Created product id and  y confirmation message
      *
      * @OA\Post(
      *     path="/api/outlet",
-     *     summary="Crear un nuevo producto del outlet",
+     *     summary="Creates a new product from outlet",
      *     tags={"Outlet"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
@@ -77,9 +79,9 @@ class OutletController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Producto creado correctamente",
+     *         description="Product successfully created",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Producto creado correctamente."),
+     *             @OA\Property(property="message", type="string", example="Product successfully created."),
      *             @OA\Property(property="id", type="integer", example=21)
      *         )
      *     ),
@@ -89,11 +91,11 @@ class OutletController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Errores de validación",
+     *         description="Validation errors",
      *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
      *     )
      * )
@@ -103,40 +105,40 @@ class OutletController extends Controller
 
         $product = Product::create($request->all());
         return response()->json([
-            'message' => "Producto creado correctamente.",
+            'message' => "Product successfully created.",
             'id' => $product->id
         ], 201);
     }
     /** 
-     * Devuelve los datos de un producto del outlet específico.
+     * Returns the data of a specific outlet product.
      * 
-     * Es un endpoint público 
+     * This is a public endpoint.
      * 
-     * Busca el producto por su ID y comprueba que pertenezca al outlet.
-     * Si no se encuentra, devuelve un error 
+     * It searches for the product by its ID and checks if it belongs to the outlet.
+     * If not found, it returns an error.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Detalles del producto o error
+     * @return \Illuminate\Http\JsonResponse Product details or error
      * 
      * @OA\Get( 
      *      path="/api/outlet/{id}", 
-     *      summary="Obtener un producto del outlet por ID", 
+     *      summary="Get an outlet product by ID", 
      *      tags={"Outlet"}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del producto", 
+     *          description="Product ID", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Detalles del producto", 
+     *          description="Product details", 
      *          @OA\JsonContent(ref="#/components/schemas/Product") 
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Producto no encontrado o perteneciente al outlet", 
+     *          description="Product not found or not belonging to the outlet", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
@@ -148,13 +150,13 @@ class OutletController extends Controller
         $product = Product::find($id);
         if (!$product) {
             return response()->json(
-                ['message' => 'Producto no encontrado'],
+                ['message' => 'Product not found'],
                 404
             );
         }
         if (!($product->has_discount)) {
             return response()->json(
-                ['message' => 'Este producto no es del outlet'],
+                ['message' => 'This product is not from the outlet.'],
                 404
             );
         }
@@ -162,31 +164,31 @@ class OutletController extends Controller
     }
 
     /** 
-     * Elimina un producto que pertenezca al outlet por su ID. 
+     * Deletes a product from the outlet by its ID.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Si el producto no existe, devuelve un error 404. 
-     * Si se elimina correctamente, devuelve un código 204. 
+     * If the product does not exist, it returns a 404 error.
+     * If successfully deleted, it returns a 200 status code.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
+     * @return \Illuminate\Http\JsonResponse Deletion result
      * 
      * @OA\Delete( 
      *      path="/api/outlet/{id}", 
-     *      summary="Elimina un producto del outlet", 
+     *      summary="Delete an outlet product", 
      *      tags={"Outlet"},
      *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del producto a eliminar", 
+     *          description="ID of the product to delete", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Producto eliminado correctamente" 
+     *          description="Product successfully deleted" 
      *      ), 
      *      @OA\Response(
      *         response=401,
@@ -194,11 +196,11 @@ class OutletController extends Controller
      *      ),
      *      @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Producto no encontrado", 
+     *          description="Product not found", 
      *          @OA\JsonContent( ref="#/components/schemas/NotFoundError" )
      *      ), 
      * ) 
@@ -208,20 +210,20 @@ class OutletController extends Controller
         $product = Product::find($id);
         if (!$product) {
             return response()->json(
-                ['message' => 'Producto no encontrado'],
+                ['message' => 'Product not found'],
                 404
             );
         }
         if (!($product->has_discount)) {
             // Este endpoint solo debe eliminar productos del oultet
             return response()->json(
-                ['message' => 'Este producto no es del outlet'],
+                ['message' => 'This product is not from the outlet.'],
                 404
             );
         }
         $product->delete();
         return response()->json(
-            ['message' => 'Producto eliminado correctamente'],
+            ['message' => 'Product successfully deleted'],
             200
         );
     }

@@ -13,21 +13,20 @@ use Illuminate\Support\Facades\Auth;
 class ReviewController extends Controller
 {
     /**
-     * Devuelve un listado de todas las reseñas de la base de datos.
+     * Returns a list of all reviews in the database.
      * 
+     * This function fetches all records from the Review model and 
+     * returns them in JSON format.
      * 
-     * Esta función obtiene todos los registros del modelo Review y 
-     * los devuelve en formato JSON. 
-     * 
-     * @return \Illuminate\Http\JsonResponse Listado de reviews 
+     * @return \Illuminate\Http\JsonResponse List of reviews
      * 
      * @OA\Get( 
      *     path="/api/reviews", 
-     *     summary="Obtener todas las reviews", 
+     *     summary="Get all reviews", 
      *     tags={"Reviews"}, 
      *     @OA\Response( 
      *         response=200, 
-     *         description="Lista de reviews", 
+     *         description="List of reviews", 
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/Review")
@@ -39,7 +38,7 @@ class ReviewController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ) 
      * )
      */
@@ -49,31 +48,31 @@ class ReviewController extends Controller
     }
 
     /**
-     * Crea una nueva review con los datos proporcionados. 
+     * Creates a new review with the provided data.
      * 
-     * Requiere autenticación
+     * Requires authentication.
      * 
-     * Valida los campos requeridos antes de almacenar el recurso. 
-     * El campo "comment" es opcional. 
-     * Devuelve el ID de la review creada y mensaje de confirmación si la operación es exitosa.
+     * Validates the required fields before storing the resource.
+     * The "comment" field is optional.
+     * Returns the ID of the created review and a confirmation message if successful.
      * 
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse ID de la review creada y mensaje de confirmación
+     * @return \Illuminate\Http\JsonResponse ID of the created review and confirmation message
      *
      * @OA\Post(
      *     path="/api/reviews",
-     *     summary="Crear una nueva review",
+     *     summary="Create a new review",
      *     tags={"Reviews"},
-     *     security={{"bearerAuth": {}}},
+     *     security={{"bearerAuth": {}}}, 
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(ref="#/components/schemas/ReviewCreate")
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Review creada correctamente",
+     *         description="Review successfully created",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Review creada correctamente."),
+     *             @OA\Property(property="message", type="string", example="Review successfully created."),
      *             @OA\Property(property="id", type="integer", example=1)
      *         )
      *     ),
@@ -83,11 +82,11 @@ class ReviewController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Errores de validación",
+     *         description="Validation errors",
      *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
      *     )
      * )
@@ -103,34 +102,33 @@ class ReviewController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Review creada correctamente.',
+            'message' => 'Review successfully created',
             'id' => $review->id,
         ], 201);
     }
 
-    /** 
-     * Devuelve los datos de una review específica.
+    /**
+     * Returns the details of a specific review.
      * 
-     * 
-     * Busca la review por su ID. Si no se encuentra, devuelve un error 
+     * Looks up the review by its ID. If not found, returns an error.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Detalles de la review o error
+     * @return \Illuminate\Http\JsonResponse Review details or error
      * 
      * @OA\Get( 
      *      path="/api/reviews/{id}", 
-     *      summary="Obtener una review por su ID", 
+     *      summary="Get a review by its ID", 
      *      tags={"Reviews"}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID de la review", 
+     *          description="Review ID", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Detalles de la review", 
+     *          description="Review details", 
      *          @OA\JsonContent(ref="#/components/schemas/Review") 
      *      ),
      *      @OA\Response(
@@ -139,11 +137,11 @@ class ReviewController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
-     *      @OA\Response( 
+     *     @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
@@ -161,30 +159,31 @@ class ReviewController extends Controller
         return response()->json($review);
     }
 
-    /** 
-     * Actualiza los datos de una review existente.
+    /**
+     * Updates the data of an existing review.
      * 
-     * Requiere autenticación.
-     * Solo se puede actualizar si la review ha sido creada por el usuario autenticado
-     * Permite actualizar uno o varios campos de una review. 
-     * Devuelve la review actualizada si todo es correcto. 
+     * Requires authentication.
+     * The review can only be updated if it was created by the authenticated user.
+     * Allows updating one or more fields of a review.
+     * Returns the updated review if successful.
      * 
      * @param \Illuminate\Http\Request $request 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Review actualizada o error 
+     * @return \Illuminate\Http\JsonResponse Updated review or error
      * 
      * @OA\Put( 
      *      path="/api/reviews/{id}", 
-     *      summary="Actualizar una review", 
+     *      summary="Update a review", 
      *      tags={"Reviews"}, 
-     *      security={{"bearerAuth": {}}},
+     *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID de la review a actualizar", 
+     *          description="ID of the review to update", 
      *          @OA\Schema(type="integer") 
-     *      ), @OA\RequestBody( 
+     *      ), 
+     *      @OA\RequestBody( 
      *          required=true, 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/ReviewUpdate" 
@@ -192,9 +191,9 @@ class ReviewController extends Controller
      *      ), 
      *      @OA\Response(
      *          response=200,
-     *          description="Review actualizada correctamente",
+     *          description="Review successfully updated",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Review actualizada correctamente"),
+     *              @OA\Property(property="message", type="string", example="Review successfully updated"),
      *              @OA\Property(property="review", ref="#/components/schemas/Review")
      *          )
      *      ), 
@@ -204,18 +203,18 @@ class ReviewController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ), 
      *     @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
+     *          description="Resource not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
      *      ), 
      *      @OA\Response( 
      *          response=422, 
-     *          description="Errores de validación", 
+     *          description="Validation errors", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/ValidationError" 
      *          ) 
@@ -232,46 +231,46 @@ class ReviewController extends Controller
 
         if ($user_id!==$review->user_id) {
             return response()->json([
-                'message' => 'No autorizado.'
+                'message' => 'Unauthorized.'
             ], 403);
         }
       
         $review->update($request->all());
 
         return response()->json([
-            'message' => 'Review actualizada correctamente.',
+            'message' => 'Review successfully updated',
             'review' => $review,
         ], 200);
     }
 
-    /** 
-     * Elimina una review por su ID. 
+    /**
+     * Deletes a review by its ID.
      * 
-     * Requiere autenticación.
+     * Requires authentication.
      * 
-     * Solo se puede eliminar si la review ha sido creada por el usuario autenticado
+     * The review can only be deleted if it was created by the authenticated user.
      * 
-     * Si la review no existe, devuelve un error 404. 
-     * Si se elimina correctamente, devuelve un código 204. 
+     * If the review does not exist, returns a 404 error.
+     * If successfully deleted, returns a 200 status code.
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
+     * @return \Illuminate\Http\JsonResponse Deletion result
      * 
      * @OA\Delete( 
      *      path="/api/reviews/{id}", 
-     *      summary="Elimina una review", 
+     *      summary="Delete a review", 
      *      tags={"Reviews"},
      *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID de la review a eliminar", 
+     *          description="ID of the review to delete", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
-     *          response=200, 
-     *          description="Review eliminado correctamente" 
+     *          response=204, 
+     *          description="Review deleted" 
      *      ), 
      *      @OA\Response(
      *         response=401,
@@ -279,13 +278,13 @@ class ReviewController extends Controller
      *      ),
      *      @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Recurso no encontrado", 
-     *          @OA\JsonContent( ref="#/components/schemas/NotFoundError" )
-     *      ), 
+     *          description="Resource not found", 
+     *          @OA\JsonContent(ref="#/components/schemas/NotFoundError")
+     *      ) 
      * ) 
      */
     public function destroy(string $id)
@@ -299,13 +298,13 @@ class ReviewController extends Controller
         
         if ($user_id!==$review->user_id) {
             return response()->json([
-                'message' => 'No autorizado.'
+                'message' => 'Unauthorized.'
             ], 403);
         }
         $review->delete();
 
         return response()->json([
-            'message' => 'Review eliminada.'
+            'message' => 'Review deleted.'
         ], 200);
     }
 }

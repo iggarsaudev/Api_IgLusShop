@@ -13,12 +13,12 @@ namespace App\Docs\Schemas;
  *      @OA\Property( 
  *          property="name", 
  *          type="string", 
- *          example="Camiseta Deportiva" 
+ *          example="Sports T-shirt" 
  *      ), 
  *      @OA\Property( 
  *          property="description", 
  *          type="string", 
- *          example="Camiseta técnica de alto rendimiento"
+ *          example="High-performance technical t-shirt"
  *      ), 
  *      @OA\Property( 
  *          property="price", 
@@ -34,7 +34,7 @@ namespace App\Docs\Schemas;
  *          property="image", 
  *          type="string", 
  *          format="uri",
- *          example="https://www.ejemplo.com/imagenes/camiseta.jpg"
+ *          example="https://www.example.com/images/tshirt.jpg"
  *      ), 
  *      @OA\Property( 
  *          property="has_discount", 
@@ -53,13 +53,13 @@ namespace App\Docs\Schemas;
  *          property="provider_id", 
  *          type="integer", 
  *          example=1,
- *          description="ID del proveedor relacionada (clave foránea a Provider)"
+ *          description="Related provider ID (foreign key a Provider)"
  *      ), 
  *     @OA\Property( 
  *          property="category_id", 
  *          type="integer", 
  *          example=1,
- *          description="ID de la categoría relacionada (clave foránea a Category)" 
+ *          description="Related category ID (foreign key a Category)" 
  *      ), 
  *      @OA\Property( 
  *      property="created_at", 

@@ -10,13 +10,13 @@ namespace App\Docs\Schemas;
  *         property="name",
  *         type="string",
  *         minLength=3,
- *         example="Camiseta Deportiva"
+ *         example="Sports T-shirt"
  *     ),
  *     @OA\Property(
  *         property="description",
  *         type="string",
  *         maxLength=255,
- *         example="Camiseta técnica de alto rendimiento"
+ *         example="High-performance technical t-shirt"
  *     ),
  *     @OA\Property(
  *         property="price",
@@ -39,28 +39,29 @@ namespace App\Docs\Schemas;
  *         property="has_discount",
  *         type="boolean",
  *         enum={false},
- *         description="Debe ser false o equivalente (declined). El producto creado NO puede tener descuento inicialmente.",
+ *         description="Must be false or equivalent (declined). The created product must NOT have a discount initially.",
  *         example=false
  *     ),
  *     @OA\Property(
  *         property="discount",
  *         type="number",
- *         description="Debe ser 0 si no hay descuento.",
+ *         description="Must be 0 if there is no discount.",
  *         example=0
  *     ),
  *     @OA\Property(
  *         property="category_id",
  *         type="integer",
- *         description="ID de la categoría relacionada (clave foránea a Category)",
+ *         description="Related category ID (foreign key to Category)",
  *         example=1
  *     ),
  *     @OA\Property(
  *         property="provider_id",
  *         type="integer",
- *         description="ID del proveedor relacionada (clave foránea a Provider)",
+ *         description="Related provider ID (foreign key to Provider)",
  *         example=5
  *     )
  * )
  */
+
 
 class ProductCreateSchema {}
