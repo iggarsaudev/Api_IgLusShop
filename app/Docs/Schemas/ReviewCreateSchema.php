@@ -7,21 +7,21 @@ namespace App\Docs\Schemas;
  *     type="object",
  *     required={"product_id", "rating"},
  *     @OA\Property( 
- *          property="product_id", 
- *          type="integer", 
- *          example=1,
- *          description="Id del producto al que apunta la reseña (Clave foránea a products)" 
- *      ),
+ *         property="product_id", 
+ *         type="integer", 
+ *         example=1,
+ *         description="ID of the product the review refers to (foreign key to products)" 
+ *     ),
  *     @OA\Property( 
- *          property="comment", 
- *          type="string", 
- *          example="El producto es de buena calidad",
- *      ), 
+ *         property="comment", 
+ *         type="string", 
+ *         example="The product is of good quality"
+ *     ), 
  *     @OA\Property( 
- *          property="rating", 
- *          type="integer", 
- *          example=5,
- *      ),
+ *         property="rating", 
+ *         type="integer", 
+ *         example=5
+ *     )
  * )
  */
 

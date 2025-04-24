@@ -12,13 +12,13 @@ namespace App\Docs\Schemas;
  *         property="name",
  *         type="string",
  *         minLength=3,
- *         example="Camiseta Deportiva"
+ *         example="Sports T-shirt"
  *     ),
  *     @OA\Property(
  *         property="description",
  *         type="string",
  *         maxLength=255,
- *         example="Camiseta cómoda para entrenamiento"
+ *         example="confortable t-shirt for training"
  *     ),
  *     @OA\Property(
  *         property="price",
@@ -51,13 +51,13 @@ namespace App\Docs\Schemas;
  *         property="category_id",
  *         type="integer",
  *         example=1,
- *         description="ID de la categoría relacionada (clave foránea a Category)" 
+ *         description="Related category ID (foreign key a Category)" 
  *     ),
  *     @OA\Property(
  *         property="provider_id",
  *         type="integer",
  *         example=2,
- *         description="ID del proveedor relacionada (clave foránea a Provider)"
+ *         description="Related provider ID (foreign key a Provider)"
  *     )
  * )
  */

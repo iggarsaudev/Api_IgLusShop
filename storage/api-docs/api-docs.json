@@ -461,12 +461,12 @@
                 "tags": [
                     "Outlet"
                 ],
-                "summary": "Obtener todos los productos sin descuento",
-                "description": "Devuelve un listado de todos los productos que tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
+                "summary": "Get all products with a discount",
+                "description": "Returns a list of all the products with discount.\n\nThis is a public endpoint .\n\nThis function retrieves all products with a discount from the\nProduct model and returns them in JSON format. Each product includes\nid, name, description, price, stock, image, has_discount, discount, provider_id, category_id, created_at, and updated_at.\nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
                 "operationId": "955d73daad4a3e784296234cb13fc5d8",
                 "responses": {
                     "200": {
-                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
+                        "description": "List of products with discount (public endpoint, does not require authentication).",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -484,8 +484,8 @@
                 "tags": [
                     "Outlet"
                 ],
-                "summary": "Crear un nuevo producto del outlet",
-                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre verdarep para los productos del outlet.\n   Si se quiere generar un producto sin descuento se debe hacer desde el endpoint correspondiente de products.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es verdadero, este valor debe ser mayor de 0 y menor de 100.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
+                "summary": "Creates a new product from outlet",
+                "description": "Creates a new product from outlet.\n\nRequires authentication and administrator permissions.\n\nWhen creating a new product, the following fields are required:\n\n- `name`: The name of the product. Must be a string with a minimum of 3 characters.\n- `description`: A detailed description of the product. Must be a string with a maximum of 255 characters.\n- `price`: The price of the product. Must be a decimal number with up to two decimal places.\n- `category_id`: ID of the category the product belongs to. Must be an integer and must exist in the database.\n- `provider_id`: ID of the provider associated with the product. Must be an integer and must exist in the database.\n\nThe following fields are optional, but if included, must meet the specified validations:\n\n- `stock`: An integer indicating the available quantity of the product in stock.\n- `image`: A valid URL pointing to the product's image.\n- `has_discount`: A boolean field indicating whether the product has a discount. This field must always be true for outlet products.\n   To create a product without a discount, use the appropriate products endpoint.\n- `discount`: The discount applied to the product. If `has_discount` is true, this value must be greater than 0 and less than 100.\n\nValidation includes type constraints and specific value rules. If any field does not comply with the rules, an error will be returned.",
                 "operationId": "d11b65ac7954125f05487fe45862fcff",
                 "requestBody": {
                     "required": true,
@@ -499,14 +499,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Producto creado correctamente",
+                        "description": "Product successfully created",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Producto creado correctamente."
+                                            "example": "Product successfully created."
                                         },
                                         "id": {
                                             "type": "integer",
@@ -522,10 +522,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -547,14 +547,14 @@
                 "tags": [
                     "Outlet"
                 ],
-                "summary": "Obtener un producto del outlet por ID",
-                "description": "Devuelve los datos de un producto del outlet específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que pertenezca al outlet.\nSi no se encuentra, devuelve un error",
+                "summary": "Get an outlet product by ID",
+                "description": "Returns the data of a specific outlet product.\n\nThis is a public endpoint.\n\nIt searches for the product by its ID and checks if it belongs to the outlet.\nIf not found, it returns an error.",
                 "operationId": "7029b3370902ee0537345e1fa4f65ce5",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del producto",
+                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -563,7 +563,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalles del producto",
+                        "description": "Product details",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -573,7 +573,7 @@
                         }
                     },
                     "404": {
-                        "description": "Producto no encontrado o perteneciente al outlet",
+                        "description": "Product not found or not belonging to the outlet",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -588,14 +588,14 @@
                 "tags": [
                     "Outlet"
                 ],
-                "summary": "Elimina un producto del outlet",
-                "description": "Elimina un producto que pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "summary": "Delete an outlet product",
+                "description": "Deletes a product from the outlet by its ID.\n\nRequires authentication and administrator permissions.\n\nIf the product does not exist, it returns a 404 error.\nIf successfully deleted, it returns a 200 status code.",
                 "operationId": "97899162908852e82c2655aedb3de42b",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del producto a eliminar",
+                        "description": "ID of the product to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -604,16 +604,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Producto eliminado correctamente"
+                        "description": "Product successfully deleted"
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Producto no encontrado",
+                        "description": "Product not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -635,12 +635,12 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Obtener todos los productos sin descuento",
-                "description": "Devuelve un listado de todos los productos que no tienen descuento.\n\nEste endpoint es público.\n\nEsta función obtiene todos  los productos que no tienen descuento del \nmodelo Product y los devuelve en formato JSON. Cada producto incluye \nid, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.",
+                "summary": "Get all products without discount",
+                "description": "Returns a list of all products without a discount.\n\nThis endpoint is public.\n\nThis function retrieves all products without a discount from the\nProduct model and returns them in JSON format. Each product includes\nid, name, description, price, stock, image, has_discount, discount, provider_id, category_id, created_at, and updated_at.",
                 "operationId": "a68f225209c8749043e8020d23e2426a",
                 "responses": {
                     "200": {
-                        "description": "Lista de productos sin descuento (endpoint público, no requiere autenticación)",
+                        "description": "List of products without discount (public endpoint, does not require authentication)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -660,8 +660,8 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Crear un nuevo producto",
-                "description": "Crea un nuevo producto con los datos proporcionados. \n\nRequiere autenticación y permisos de administrador.\n\nAl crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:\n\n- `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.\n- `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.\n- `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.\n- `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.\n- `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.\n\nLos siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:\n\n- `stock`: Número entero que indica la cantidad disponible del producto en stock.\n- `image`: URL válida que apunta a la imagen del producto.\n- `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre falso para los productos estándar. Si se quiere generar un producto \n   con descuento se debe hacer desde el endpoint correspondiente de outlet.\n- `discount`: El descuento aplicado al producto. Si `has_discount` es falso, este valor debe ser 0.\n\nLa validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.",
+                "summary": "Create a new product",
+                "description": "Creates a new product with the provided data.\n\nRequires authentication and administrator permissions.\n\nWhen creating a new product, the following fields are required:\n\n- `name`: The name of the product. Must be a string with a minimum of 3 characters.\n- `description`: A detailed description of the product. Must be a string with a maximum of 255 characters.\n- `price`: The price of the product. Must be a decimal number with up to two decimal places.\n- `category_id`: The ID of the category the product belongs to. Must be an integer and must exist in the database.\n- `provider_id`: The ID of the provider associated with the product. Must be an integer and must exist in the database.\n\nThe following fields are optional, but if included, must meet the specified validations:\n\n- `stock`: An integer indicating the available quantity of the product in stock.\n- `image`: A valid URL pointing to the product's image.\n- `has_discount`: A boolean field indicating whether the product has a discount. This field must always be false for standard products and true for outlet products.\n- `discount`: The discount applied to the product. If `has_discount` is false, this value must be 0.\n\nValidation includes type constraints and specific value rules. If any field does not comply with the rules, an error will be returned.",
                 "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
                 "requestBody": {
                     "required": true,
@@ -675,14 +675,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Producto creado correctamente",
+                        "description": "Product successfully created",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Producto creado correctamente."
+                                            "example": "Product successfully created."
                                         },
                                         "id": {
                                             "type": "integer",
@@ -698,10 +698,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -723,14 +723,14 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Obtener un producto por ID",
-                "description": "Devuelve los datos de un producto específico.\n\nEs un endpoint público \n\nBusca el producto por su ID y comprueba que no pertenezca al outlet.\nSi no se encuentra, devuelve un error",
+                "summary": "Get a product by ID",
+                "description": "REtrieves data about an especific product.\n\nThis is a public endpoint \n\nBusca el producto por su ID y comprueba que no pertenezca al outlet.\nSi no se encuentra, devuelve un error",
                 "operationId": "c87fb2e4d617e7b36c712cad358acdb8",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del producto",
+                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -739,7 +739,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalles del producto",
+                        "description": "Product details",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -749,7 +749,7 @@
                         }
                     },
                     "404": {
-                        "description": "Producto no encontrado o perteneciente al outlet",
+                        "description": "Product not found or belonging to outlet",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -764,14 +764,14 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Actualizar un producto",
-                "description": "Actualiza los datos de un producto existente ya sea del outlet o no.\n\nRequiere autenticación y permisos de administrador.  \n\nPermite actualizar uno o varios campos del producto. \nDevuelve el producto actualizado si todo es correcto. \n\nPermite actualizar el campo has_discount a un valor truthy para pasar el producto al \nendpoint de outlet",
+                "summary": "Update a product",
+                "description": "Updates the data of an existing product, whether it is from the outlet or not.\n\nRequires authentication and administrator permissions.  \n\nAllows updating one or more fields of the product. \nReturns the updated product if everything is correct. \n\nAllows updating the `has_discount` field to a truthy value in order to move the product\nto the outlet endpoint.",
                 "operationId": "416e4959a3919547eb609d87e3db9135",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del producto a actualizar",
+                        "description": "ID of the product to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -790,14 +790,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Producto actualizado correctamente",
+                        "description": "Product successfully updated",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Producto actualizado correctamente"
+                                            "example": "Product successfully updated"
                                         },
                                         "product": {
                                             "$ref": "#/components/schemas/ProductUpdate"
@@ -812,10 +812,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Producto no encontrado",
+                        "description": "Product not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -825,7 +825,7 @@
                         }
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -845,14 +845,14 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "Elimina un producto",
+                "summary": "Deletes a product",
                 "description": "Elimina un producto que no pertenezca al outlet por su ID. \n\nRequiere autenticación y permisos de administrador.\n\nSi el producto no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
                 "operationId": "b49ce9f3cb168b233245548fb4ef36d3",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID del producto a eliminar",
+                        "description": "ID of the product to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -861,16 +861,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Producto eliminado correctamente"
+                        "description": "Product successfully deleted"
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Producto no encontrado",
+                        "description": "Product not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1169,12 +1169,12 @@
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Obtener todas las reviews",
-                "description": "Devuelve un listado de todas las reseñas de la base de datos.\n\n\nEsta función obtiene todos los registros del modelo Review y \nlos devuelve en formato JSON.",
+                "summary": "Get all reviews",
+                "description": "Returns a list of all reviews in the database.\n\nThis function fetches all records from the Review model and \nreturns them in JSON format.",
                 "operationId": "72b70a0c4b8c3af58b7e8a6a8e659d77",
                 "responses": {
                     "200": {
-                        "description": "Lista de reviews",
+                        "description": "List of reviews",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1190,7 +1190,7 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     }
                 }
             },
@@ -1198,8 +1198,8 @@
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Crear una nueva review",
-                "description": "Crea una nueva review con los datos proporcionados. \n\nRequiere autenticación\n\nValida los campos requeridos antes de almacenar el recurso. \nEl campo \"comment\" es opcional. \nDevuelve el ID de la review creada y mensaje de confirmación si la operación es exitosa.",
+                "summary": "Create a new review",
+                "description": "Creates a new review with the provided data.\n\nRequires authentication.\n\nValidates the required fields before storing the resource.\nThe \"comment\" field is optional.\nReturns the ID of the created review and a confirmation message if successful.",
                 "operationId": "f382dabdc7e71b67c93117f17f1fb255",
                 "requestBody": {
                     "required": true,
@@ -1213,14 +1213,14 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Review creada correctamente",
+                        "description": "Review successfully created",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Review creada correctamente."
+                                            "example": "Review successfully created."
                                         },
                                         "id": {
                                             "type": "integer",
@@ -1236,10 +1236,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1261,14 +1261,14 @@
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Obtener una review por su ID",
-                "description": "Devuelve los datos de una review específica.\n\n\nBusca la review por su ID. Si no se encuentra, devuelve un error",
+                "summary": "Get a review by its ID",
+                "description": "Returns the details of a specific review.\n\nLooks up the review by its ID. If not found, returns an error.",
                 "operationId": "1ebe1abb8f05e98c0059b25db9911ebe",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID de la review",
+                        "description": "Review ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1277,7 +1277,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detalles de la review",
+                        "description": "Review details",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1290,10 +1290,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1308,14 +1308,14 @@
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Actualizar una review",
-                "description": "Actualiza los datos de una review existente.\n\nRequiere autenticación.\nSolo se puede actualizar si la review ha sido creada por el usuario autenticado\nPermite actualizar uno o varios campos de una review. \nDevuelve la review actualizada si todo es correcto.",
+                "summary": "Update a review",
+                "description": "Updates the data of an existing review.\n\nRequires authentication.\nThe review can only be updated if it was created by the authenticated user.\nAllows updating one or more fields of a review.\nReturns the updated review if successful.",
                 "operationId": "47513391c5f4f9ee05b348e5d603d96b",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID de la review a actualizar",
+                        "description": "ID of the review to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1334,14 +1334,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Review actualizada correctamente",
+                        "description": "Review successfully updated",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Review actualizada correctamente"
+                                            "example": "Review successfully updated"
                                         },
                                         "review": {
                                             "$ref": "#/components/schemas/Review"
@@ -1356,10 +1356,10 @@
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1369,7 +1369,7 @@
                         }
                     },
                     "422": {
-                        "description": "Errores de validación",
+                        "description": "Validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1389,14 +1389,14 @@
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Elimina una review",
-                "description": "Elimina una review por su ID. \n\nRequiere autenticación.\n\nSolo se puede eliminar si la review ha sido creada por el usuario autenticado\n\nSi la review no existe, devuelve un error 404. \nSi se elimina correctamente, devuelve un código 204.",
+                "summary": "Delete a review",
+                "description": "Deletes a review by its ID.\n\nRequires authentication.\n\nThe review can only be deleted if it was created by the authenticated user.\n\nIf the review does not exist, returns a 404 error.\nIf successfully deleted, returns a 200 status code.",
                 "operationId": "3c59dee71ea9b81870ffa682d1ff2bae",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID de la review a eliminar",
+                        "description": "ID of the review to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1404,17 +1404,17 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Review eliminado correctamente"
+                    "204": {
+                        "description": "Review deleted"
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "No autorizado"
+                        "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Recurso no encontrado",
+                        "description": "Resource not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1860,12 +1860,12 @@
                     "name": {
                         "type": "string",
                         "minLength": 3,
-                        "example": "Camiseta Deportiva"
+                        "example": "Sports T-shirt"
                     },
                     "description": {
                         "type": "string",
                         "maxLength": 255,
-                        "example": "Camiseta técnica de alto rendimiento"
+                        "example": "High-performance technical t-shirt"
                     },
                     "price": {
                         "type": "number",
@@ -1882,7 +1882,7 @@
                         "example": "https://example.com/product.jpg"
                     },
                     "has_discount": {
-                        "description": "Debe ser verdadero o equivalente (accepted). El producto creado debe tener descuento",
+                        "description": "Must be true or equivalent (accepted). The created product must have a discount",
                         "type": "boolean",
                         "enum": [
                             true
@@ -1890,17 +1890,17 @@
                         "example": true
                     },
                     "discount": {
-                        "description": "Debe ser un valor mayor que 0 y menor o igual que 100.",
+                        "description": "Must be a value greater than 0 and less than or equal to 100.",
                         "type": "number",
                         "example": 15
                     },
                     "category_id": {
-                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "description": "Related category ID (foreign key to Category)",
                         "type": "integer",
                         "example": 1
                     },
                     "provider_id": {
-                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "description": "Related provider ID (foreign key to Provider)",
                         "type": "integer",
                         "example": 5
                     }
@@ -1919,12 +1919,12 @@
                     "name": {
                         "type": "string",
                         "minLength": 3,
-                        "example": "Camiseta Deportiva"
+                        "example": "Sports T-shirt"
                     },
                     "description": {
                         "type": "string",
                         "maxLength": 255,
-                        "example": "Camiseta técnica de alto rendimiento"
+                        "example": "High-performance technical t-shirt"
                     },
                     "price": {
                         "type": "number",
@@ -1941,7 +1941,7 @@
                         "example": "https://example.com/product.jpg"
                     },
                     "has_discount": {
-                        "description": "Debe ser false o equivalente (declined). El producto creado NO puede tener descuento inicialmente.",
+                        "description": "Must be false or equivalent (declined). The created product must NOT have a discount initially.",
                         "type": "boolean",
                         "enum": [
                             false
@@ -1949,17 +1949,17 @@
                         "example": false
                     },
                     "discount": {
-                        "description": "Debe ser 0 si no hay descuento.",
+                        "description": "Must be 0 if there is no discount.",
                         "type": "number",
                         "example": 0
                     },
                     "category_id": {
-                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "description": "Related category ID (foreign key to Category)",
                         "type": "integer",
                         "example": 1
                     },
                     "provider_id": {
-                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "description": "Related provider ID (foreign key to Provider)",
                         "type": "integer",
                         "example": 5
                     }
@@ -1989,11 +1989,11 @@
                     },
                     "name": {
                         "type": "string",
-                        "example": "Camiseta Deportiva"
+                        "example": "Sports T-shirt"
                     },
                     "description": {
                         "type": "string",
-                        "example": "Camiseta técnica de alto rendimiento"
+                        "example": "High-performance technical t-shirt"
                     },
                     "price": {
                         "type": "number",
@@ -2006,7 +2006,7 @@
                     "image": {
                         "type": "string",
                         "format": "uri",
-                        "example": "https://www.ejemplo.com/imagenes/camiseta.jpg"
+                        "example": "https://www.example.com/images/tshirt.jpg"
                     },
                     "has_discount": {
                         "description": "Este campo debe ser siempre false. si se cambia a true el producto pasa al outlet",
@@ -2020,12 +2020,12 @@
                         "example": 0
                     },
                     "provider_id": {
-                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "description": "Related provider ID (foreign key a Provider)",
                         "type": "integer",
                         "example": 1
                     },
                     "category_id": {
-                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "description": "Related category ID (foreign key a Category)",
                         "type": "integer",
                         "example": 1
                     },
@@ -2049,12 +2049,12 @@
                     "name": {
                         "type": "string",
                         "minLength": 3,
-                        "example": "Camiseta Deportiva"
+                        "example": "Sports T-shirt"
                     },
                     "description": {
                         "type": "string",
                         "maxLength": 255,
-                        "example": "Camiseta cómoda para entrenamiento"
+                        "example": "confortable t-shirt for training"
                     },
                     "price": {
                         "type": "number",
@@ -2079,12 +2079,12 @@
                         "example": 0
                     },
                     "category_id": {
-                        "description": "ID de la categoría relacionada (clave foránea a Category)",
+                        "description": "Related category ID (foreign key a Category)",
                         "type": "integer",
                         "example": 1
                     },
                     "provider_id": {
-                        "description": "ID del proveedor relacionada (clave foránea a Provider)",
+                        "description": "Related provider ID (foreign key a Provider)",
                         "type": "integer",
                         "example": 2
                     }
@@ -2161,13 +2161,13 @@
                 ],
                 "properties": {
                     "product_id": {
-                        "description": "Id del producto al que apunta la reseña (Clave foránea a products)",
+                        "description": "ID of the product the review refers to (foreign key to products)",
                         "type": "integer",
                         "example": 1
                     },
                     "comment": {
                         "type": "string",
-                        "example": "El producto es de buena calidad"
+                        "example": "The product is of good quality"
                     },
                     "rating": {
                         "type": "integer",
@@ -2191,18 +2191,18 @@
                         "example": 1
                     },
                     "user_id": {
-                        "description": "Id del usuario que crea la reseña (Clave foránea a users)",
+                        "description": "ID of the user who created the review (foreign key to users)",
                         "type": "integer",
                         "example": 1
                     },
                     "product_id": {
-                        "description": "Id del producto al que apunta la reseña (Clave foránea a products)",
+                        "description": "ID of the product the review refers to (foreign key to products)",
                         "type": "integer",
                         "example": 1
                     },
                     "comment": {
                         "type": "string",
-                        "example": "El producto es de buena calidad"
+                        "example": "The product is of good quality"
                     },
                     "rating": {
                         "type": "integer",
@@ -2225,13 +2225,13 @@
                 "title": "Review",
                 "properties": {
                     "product_id": {
-                        "description": "Id del producto al que apunta la reseña (Clave foránea a products)",
+                        "description": "ID of the product the review refers to (foreign key to products)",
                         "type": "integer",
                         "example": 1
                     },
                     "comment": {
                         "type": "string",
-                        "example": "El producto es de buena calidad"
+                        "example": "The product is of good quality"
                     },
                     "rating": {
                         "type": "integer",

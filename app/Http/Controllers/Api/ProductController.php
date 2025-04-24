@@ -11,65 +11,63 @@ use App\Http\Requests\ProductUpdateRequest;
 class ProductController extends Controller
 {
     /**
-     * Devuelve un listado de todos los productos que no tienen descuento.
+     * Returns a list of all products without a discount.
      * 
-     * Este endpoint es público.
+     * This endpoint is public.
      * 
-     * Esta función obtiene todos  los productos que no tienen descuento del 
-     * modelo Product y los devuelve en formato JSON. Cada producto incluye 
-     * id, name, description, price, stock, image,has_discount,discount,provider_id,category_id,created_at,updated_at.
+     * This function retrieves all products without a discount from the
+     * Product model and returns them in JSON format. Each product includes
+     * id, name, description, price, stock, image, has_discount, discount, provider_id, category_id, created_at, and updated_at.
      * 
-     * @return \Illuminate\Http\JsonResponse Listado de productos sin descuento 
+     * @return \Illuminate\Http\JsonResponse List of products without discount
      * 
      * @OA\Get( 
      *     path="api/products", 
-     *     summary="Obtener todos los productos sin descuento", 
+     *     summary="Get all products without discount", 
      *     tags={"Products"}, 
      *     @OA\Response( 
      *         response=200, 
-     *         description="Lista de productos sin descuento (endpoint público, no requiere autenticación)", 
+     *         description="List of products without discount (public endpoint, does not require authentication)", 
      *         @OA\JsonContent(
      *             type="array",
      *             @OA\Items(ref="#/components/schemas/Product")
      *         ) 
      *     ),
      * )
-     */
+    */
     public function index()
     {
         return Product::where('has_discount', false)->get();
     }
 
     /**
-     * Crea un nuevo producto con los datos proporcionados. 
+     * Creates a new product with the provided data.
      * 
-     * Requiere autenticación y permisos de administrador.
+     * Requires authentication and administrator permissions.
      * 
-     * Al crear un nuevo producto, se deben proporcionar los siguientes campos obligatorios:
+     * When creating a new product, the following fields are required:
      * 
-     * - `name`: El nombre del producto, que debe ser una cadena de texto con un mínimo de 3 caracteres.
-     * - `description`: Descripción detallada del producto, la cual debe ser una cadena de texto con un máximo de 255 caracteres.
-     * - `price`: El precio del producto, que debe ser un número decimal con un máximo de dos decimales.
-     * - `category_id`: ID de la categoría a la que pertenece el producto. Debe ser un número entero y debe existir en la base de datos.
-     * - `provider_id`: ID del proveedor asociado al producto. Debe ser un número entero y debe existir en la base de datos.
+     * - `name`: The name of the product. Must be a string with a minimum of 3 characters.
+     * - `description`: A detailed description of the product. Must be a string with a maximum of 255 characters.
+     * - `price`: The price of the product. Must be a decimal number with up to two decimal places.
+     * - `category_id`: The ID of the category the product belongs to. Must be an integer and must exist in the database.
+     * - `provider_id`: The ID of the provider associated with the product. Must be an integer and must exist in the database.
      * 
-     * Los siguientes campos son opcionales, pero si se incluyen, deben cumplir con las siguientes validaciones:
+     * The following fields are optional, but if included, must meet the specified validations:
      * 
-     * - `stock`: Número entero que indica la cantidad disponible del producto en stock.
-     * - `image`: URL válida que apunta a la imagen del producto.
-     * - `has_discount`: Campo booleano que indica si el producto tiene descuento. Este campo debe ser siempre falso para los productos estándar. Si se quiere generar un producto 
-     *    con descuento se debe hacer desde el endpoint correspondiente de outlet.
-     * - `discount`: El descuento aplicado al producto. Si `has_discount` es falso, este valor debe ser 0.
+     * - `stock`: An integer indicating the available quantity of the product in stock.
+     * - `image`: A valid URL pointing to the product's image.
+     * - `has_discount`: A boolean field indicating whether the product has a discount. This field must always be false for standard products and true for outlet products.
+     * - `discount`: The discount applied to the product. If `has_discount` is false, this value must be 0.
      * 
-     * La validación incluye restricciones de tipo de datos y valores específicos. Si cualquier campo no cumple con las reglas, se devolverá un error.
+     * Validation includes type constraints and specific value rules. If any field does not comply with the rules, an error will be returned.
      *
-     * 
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse ID del producto creado y mensaje de confirmación
+     * @return \Illuminate\Http\JsonResponse ID of the created product and confirmation message
      *
      * @OA\Post(
      *     path="/api/products",
-     *     summary="Crear un nuevo producto",
+     *     summary="Create a new product",
      *     tags={"Products"},
      *     security={{"bearerAuth": {}}},
      *     @OA\RequestBody(
@@ -78,9 +76,9 @@ class ProductController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Producto creado correctamente",
+     *         description="Product successfully created",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Producto creado correctamente."),
+     *             @OA\Property(property="message", type="string", example="Product successfully created."),
      *             @OA\Property(property="id", type="integer", example=21)
      *         )
      *     ),
@@ -90,11 +88,11 @@ class ProductController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Errores de validación",
+     *         description="Validation errors",
      *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
      *     )
      * )
@@ -103,39 +101,42 @@ class ProductController extends Controller
     {
 
         $product = Product::create($request->all());
-        return response()->json(['id' => $product->id], 201);
+        return response()->json([
+            'message' => "Product successfully created.",
+            'id' => $product->id
+        ], 201);
     }
 
     /** 
-     * Devuelve los datos de un producto específico.
+     * REtrieves data about an especific product.
      * 
-     * Es un endpoint público 
+     * This is a public endpoint 
      * 
      * Busca el producto por su ID y comprueba que no pertenezca al outlet.
      * Si no se encuentra, devuelve un error 
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Detalles del producto o error
+     * @return \Illuminate\Http\JsonResponse Product details or error
      * 
      * @OA\Get( 
      *      path="/api/products/{id}", 
-     *      summary="Obtener un producto por ID", 
+     *      summary="Get a product by ID", 
      *      tags={"Products"}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del producto", 
+     *          description="Product ID", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Detalles del producto", 
+     *          description="Product details", 
      *          @OA\JsonContent(ref="#/components/schemas/Product") 
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Producto no encontrado o perteneciente al outlet", 
+     *          description="Product not found or belonging to outlet", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
@@ -147,13 +148,13 @@ class ProductController extends Controller
         $product = Product::find($id);
         if (!$product) {
             return response()->json(
-                ['message' => 'Producto no encontrado'],
+                ['message' => 'Product not found'],
                 404
             );
         }
         if ($product->has_discount) {
             return response()->json(
-                ['message' => 'Este producto es del outlet'],
+                ['message' => 'This product is from the outlet.'],
                 404
             );
         }
@@ -161,30 +162,30 @@ class ProductController extends Controller
     }
 
     /** 
-     * Actualiza los datos de un producto existente ya sea del outlet o no.
+     * Updates the data of an existing product, whether it is from the outlet or not.
      * 
-     * Requiere autenticación y permisos de administrador.  
+     * Requires authentication and administrator permissions.  
      * 
-     * Permite actualizar uno o varios campos del producto. 
-     * Devuelve el producto actualizado si todo es correcto. 
+     * Allows updating one or more fields of the product. 
+     * Returns the updated product if everything is correct. 
      * 
-     * Permite actualizar el campo has_discount a un valor truthy para pasar el producto al 
-     * endpoint de outlet
+     * Allows updating the `has_discount` field to a truthy value in order to move the product
+     * to the outlet endpoint.
      * 
      * @param \Illuminate\Http\Request $request 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Producto actualizado o error 
+     * @return \Illuminate\Http\JsonResponse Updated product or error 
      * 
      * @OA\Put( 
      *      path="/api/products/{id}", 
-     *      summary="Actualizar un producto", 
+     *      summary="Update a product", 
      *      tags={"Products"}, 
      *      security={{"bearerAuth": {}}},
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del producto a actualizar", 
+     *          description="ID of the product to update", 
      *          @OA\Schema(type="integer") 
      *      ), @OA\RequestBody( 
      *          required=true, 
@@ -194,9 +195,9 @@ class ProductController extends Controller
      *      ), 
      *      @OA\Response(
      *          response=200,
-     *          description="Producto actualizado correctamente",
+     *          description="Product successfully updated",
      *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="Producto actualizado correctamente"),
+     *              @OA\Property(property="message", type="string", example="Product successfully updated"),
      *              @OA\Property(property="product", ref="#/components/schemas/ProductUpdate")
      *          )
      *      ), 
@@ -206,18 +207,18 @@ class ProductController extends Controller
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *     ), 
      *     @OA\Response( 
      *          response=404, 
-     *          description="Producto no encontrado", 
+     *          description="Product not found", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/NotFoundError" 
      *          ) 
      *      ), 
      *      @OA\Response( 
      *          response=422, 
-     *          description="Errores de validación", 
+     *          description="Validation errors", 
      *          @OA\JsonContent( 
      *              ref="#/components/schemas/ValidationError" 
      *          ) 
@@ -229,7 +230,7 @@ class ProductController extends Controller
         $product = Product::find($id);
         if (!$product) {
             return response()->json(
-                ['message' => 'Producto no encontrado'],
+                ['message' => 'Product not found'],
                 404
             );
         }
@@ -238,7 +239,7 @@ class ProductController extends Controller
         $product->update($request->all());
 
         return response()->json([
-            'message' => 'Producto actualizado correctamente.',
+            'message' => 'Product successfully updated',
             'product' => $product,
         ], 200);
     }
@@ -252,23 +253,23 @@ class ProductController extends Controller
      * Si se elimina correctamente, devuelve un código 204. 
      * 
      * @param string $id 
-     * @return \Illuminate\Http\JsonResponse Resultado de la eliminación 
+     * @return \Illuminate\Http\JsonResponse Deletion result
      * 
      * @OA\Delete( 
      *      path="/api/products/{id}", 
-     *      summary="Elimina un producto", 
+     *      summary="Deletes a product", 
      *      tags={"Products"},
      *      security={{"bearerAuth": {}}}, 
      *      @OA\Parameter( 
      *          name="id", 
      *          in="path", 
      *          required=true, 
-     *          description="ID del producto a eliminar", 
+     *          description="ID of the product to delete", 
      *          @OA\Schema(type="integer") 
      *      ), 
      *      @OA\Response( 
      *          response=200, 
-     *          description="Producto eliminado correctamente" 
+     *          description="Product successfully deleted" 
      *      ), 
      *      @OA\Response(
      *         response=401,
@@ -276,11 +277,11 @@ class ProductController extends Controller
      *      ),
      *      @OA\Response(
      *         response=403,
-     *         description="No autorizado"
+     *         description="Unauthorized"
      *      ),
      *      @OA\Response( 
      *          response=404, 
-     *          description="Producto no encontrado", 
+     *          description="Product not found", 
      *          @OA\JsonContent( ref="#/components/schemas/NotFoundError" )
      *      ), 
      * ) 
@@ -290,19 +291,19 @@ class ProductController extends Controller
         $product = Product::find($id);
         if (!$product) {
             return response()->json(
-                ['message' => 'Producto no encontrado'],
+                ['message' => 'Product not found'],
                 404
             );
         }
         if ($product->has_discount) {
             return response()->json(
-                ['message' => 'Este producto es del outlet'],
+                ['message' => 'This product is from the outlet.'],
                 404
             );
         }
         $product->delete();
         return response()->json(
-            ['message' => 'Producto eliminado correctamente'],
+            ['message' => 'Product successfully deleted'],
             200
         );
     }
