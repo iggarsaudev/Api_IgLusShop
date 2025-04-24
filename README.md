@@ -11,7 +11,7 @@ La plataforma permite:
 
 - Registro e inicio de sesión con autenticación mediante tokens usando **Laravel Sanctum**.
 - Gestión de usuarios con roles (`admin`, `user`).
-- Los diferentes endpoints los podrás encontrar documentados en **http://127.0.0.1:8000/api/documentation** mediante **Swagger**
+- Los diferentes endpoints se podrán encontrar documentados en **http://127.0.0.1:8000/api/documentation** mediante **Swagger**
 
 ---
 
