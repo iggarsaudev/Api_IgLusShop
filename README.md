@@ -1,7 +1,7 @@
 # 🛒 API de **IgLu’s Shop**
 
 # 📌 Resumen
-Este trabajo final del módulo 2 tiene como objetivo el desarrollo de API siguiendo con la temática del TFM1 basada en una tienda online. La aplicación está desarrollada con **Laravel** y utiliza **MySQL** como sistemas de bases de datos.
+Este trabajo final del módulo 2 tiene como objetivo el desarrollo de una API siguiendo con la temática del TFM1 basada en una tienda online. La aplicación está desarrollada con **Laravel** y utiliza **MySQL** como sistemas de bases de datos.
 
 ---
 
