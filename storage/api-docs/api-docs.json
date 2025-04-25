@@ -630,14 +630,14 @@
                 ]
             }
         },
-        "api/products": {
+        "/api/products": {
             "get": {
                 "tags": [
                     "Products"
                 ],
                 "summary": "Get all products without discount",
                 "description": "Returns a list of all products without a discount.\n\nThis endpoint is public.\n\nThis function retrieves all products without a discount from the\nProduct model and returns them in JSON format. Each product includes\nid, name, description, price, stock, image, has_discount, discount, provider_id, category_id, created_at, and updated_at.",
-                "operationId": "a68f225209c8749043e8020d23e2426a",
+                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
                 "responses": {
                     "200": {
                         "description": "List of products without discount (public endpoint, does not require authentication)",
@@ -653,9 +653,7 @@
                         }
                     }
                 }
-            }
-        },
-        "/api/products": {
+            },
             "post": {
                 "tags": [
                     "Products"
@@ -2068,7 +2066,7 @@
                     "image": {
                         "type": "string",
                         "format": "uri",
-                        "example": "https://example.com/images/producto.png"
+                        "example": "https://example.com/images/product.png"
                     },
                     "has_discount": {
                         "type": "boolean",

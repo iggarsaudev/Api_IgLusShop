@@ -35,7 +35,7 @@ namespace App\Docs\Schemas;
  *         property="image",
  *         type="string",
  *         format="uri",
- *         example="https://example.com/images/producto.png"
+ *         example="https://example.com/images/product.png"
  *     ),
  *     @OA\Property(
  *         property="has_discount",

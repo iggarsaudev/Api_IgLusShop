@@ -22,7 +22,7 @@ class ProductController extends Controller
      * @return \Illuminate\Http\JsonResponse List of products without discount
      * 
      * @OA\Get( 
-     *     path="api/products", 
+     *     path="/api/products", 
      *     summary="Get all products without discount", 
      *     tags={"Products"}, 
      *     @OA\Response( 

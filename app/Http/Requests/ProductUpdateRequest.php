@@ -27,7 +27,7 @@ class ProductUpdateRequest extends FormRequest
             'price' => 'sometimes|decimal:0,2',
             'stock' => 'integer',
             'image' => 'url',
-            'has_discount' => 'sometimes|boolean',
+            'has_discount' => 'boolean',
             'discount' => 'sometimes|numeric|gte:0|lte:100',
             'category_id' => 'sometimes|integer|exists:categories,id',
             'provider_id' => 'sometimes|integer|exists:providers,id'
